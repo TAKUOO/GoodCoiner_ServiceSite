@@ -1,0 +1,82 @@
+---
+const faqs = [
+  {
+    question: "セキュリティとAPIキーの管理は安全ですか？",
+    answer:
+      "はい、安全に設計されています。グッドコイナーでは、APIキーやトレードデータを外部サーバーに送信せず、すべてお使いのデバイス内で管理します。そのため、第三者がデータにアクセスすることはなく、安心してご利用いただけます。",
+    open: true,
+  },
+  {
+    question: "どの取引所に対応していますか？",
+  },
+  {
+    question: "MacとWindowsどちらでも使えますか？",
+  },
+  {
+    question: "無料プランに期限はありますか？",
+  },
+  {
+    question: "だれでも使用できますか？",
+  },
+];
+---
+
+<section class="bg-[var(--bg-surface-muted)] px-5 pb-[120px] pt-[140px] md:px-8">
+  <div class="mx-auto max-w-[866px]">
+    <div class="flex flex-col items-center gap-10">
+      <div class="flex flex-col items-center gap-1 text-center">
+        <p class="text-[20px] font-black leading-5 tracking-[0.12em] text-[var(--text-tertiary)]">
+          よくあるご質問
+        </p>
+        <h2
+          class="text-[72px] font-black leading-[108px] tracking-[0.04em] text-[var(--text-primary)]"
+          style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;"
+        >
+          FAQ
+        </h2>
+      </div>
+
+      <div class="w-full space-y-4">
+        {faqs.map((item) => (
+          <article class="rounded-lg bg-[var(--bg-elevated)] p-6 outline outline-2 outline-offset-[-2px] outline-[var(--border-strong)]">
+            <div class="flex items-center justify-between gap-6">
+              <div class="flex items-center gap-4">
+                <div class="flex h-10 w-10 items-center justify-center rounded bg-[var(--accent-yellow)]">
+                  <span
+                    class="text-[24px] font-bold leading-6 tracking-[0.04em] text-[var(--text-primary)]"
+                    style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;"
+                  >
+                    Q
+                  </span>
+                </div>
+                <div class="text-[18px] font-black leading-4 tracking-[0.08em] text-[var(--text-primary)]">
+                  {item.question}
+                </div>
+              </div>
+
+              <div class="flex h-10 w-10 items-center justify-center">
+                <span class="text-[28px] leading-none text-[var(--text-primary)]">{item.open ? "−" : "+"}</span>
+              </div>
+            </div>
+
+            {item.open && (
+              <div class="mt-6 flex items-start gap-4">
+                <div class="flex h-10 w-10 items-center justify-center rounded bg-[#17171c]">
+                  <span
+                    class="text-[24px] font-bold leading-6 tracking-[0.04em] text-[var(--text-inverse)]"
+                    style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;"
+                  >
+                    A
+                  </span>
+                </div>
+                <p class="flex-1 text-[16px] leading-6 tracking-[0.04em] text-[var(--text-secondary)]">
+                  {item.answer}
+                </p>
+              </div>
+            )}
+          </article>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,136 @@
+---
+const heroTitleChars = [..."Be a Good Coiner"];
+---
+
+<section class="overflow-hidden bg-[var(--bg-canvas)] pb-0 text-center">
+  <div class="mx-auto max-w-[1094px] px-5 pt-[74px] md:pt-[67px]">
+    <p class="hero-kicker mb-6 text-center text-[26px] font-bold leading-[39px] tracking-[0.04em] text-[var(--text-primary)]">
+      トレードを、感覚から仕組みへ。
+    </p>
+
+    <h1
+      class="mx-auto mb-6 text-center text-[clamp(60px,7.71vw,111px)] leading-[1] tracking-[-0.055em] text-[var(--text-primary)] md:text-[111px] md:leading-[111px]"
+      style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif; font-weight: 900; font-kerning: normal;"
+    >
+      <span class="hero-title" aria-label="Be a Good Coiner">
+        {heroTitleChars.map((char, index) => (
+          <span
+            class="hero-title-char"
+            style={`animation-delay: ${180 + index * 55}ms;`}
+            aria-hidden="true"
+          >
+            {char === " " ? "\u00A0" : char}
+          </span>
+        ))}
+      </span>
+    </h1>
+
+    <p
+      class="mx-auto max-w-[760px] text-center text-[18px] font-medium leading-[36px] tracking-[0.04em] text-[var(--text-secondary)]"
+      style="font-family: 'Inter', 'Noto Sans JP', sans-serif;"
+    >
+      グッドコイナーは、感覚や感情に左右されず、<br />
+      明確なルールと目的に基づいて暗号資産を売買するトレード管理アプリです。<br />
+      「Be a Good Coiner」を合言葉に、再現性のあるトレードを優しくサポートします。
+    </p>
+
+    <div class="mx-auto mt-9 flex w-80 flex-col items-center gap-5">
+      <a
+        id="download"
+        href="#"
+        class="inline-flex items-center justify-center gap-2.5 rounded-[var(--radius-pill)] bg-[var(--accent-yellow)] px-8 py-4 text-[18px] font-bold leading-[32.38px] tracking-[0.01em] text-[var(--text-primary)] transition hover:bg-[var(--accent-yellow-hover)]"
+      >
+        <img
+          src="/assets/icons/Finder_Icon_macOS.png"
+          alt=""
+          aria-hidden="true"
+          class="h-7 w-7"
+        />
+        Mac版をダウンロード
+      </a>
+      <p class="whitespace-nowrap text-center text-[12px] font-normal leading-[12px] tracking-[0.04em] text-[var(--text-tertiary)]">
+        ※現在GMOコインユーザーのみ利用可能。順次拡張予定です。
+      </p>
+    </div>
+  </div>
+
+  <div class="mx-auto mt-14 max-w-[1320px] px-4 md:px-6">
+    <div class="relative pb-[14px]">
+      <div class="absolute inset-x-0 bottom-0 top-[14px] rounded-[var(--radius-panel)] border-[11px] border-[var(--border-soft)] bg-[#d4d4d8]"></div>
+      <div class="relative rounded-[var(--radius-panel)] border-[11px] border-[var(--border-soft)] bg-[var(--bg-product-surface)] shadow-[var(--shadow-panel)]">
+        <div class="overflow-hidden rounded-[37px] bg-[var(--bg-product-surface)]">
+          <video
+            src="/dashboard.mp4"
+            autoplay
+            muted
+            loop
+            playsinline
+            class="block h-auto w-full"
+          ></video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero-kicker {
+    display: inline-block;
+    white-space: nowrap;
+    animation: hero-kicker-reveal 0.48s cubic-bezier(0.2, 0.8, 0.2, 1) 0.05s both;
+    transform-origin: left center;
+  }
+
+  .hero-title {
+    display: inline-flex;
+    flex-wrap: nowrap;
+  }
+
+  .hero-title-char {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(18px) scaleY(0.92) rotate(-4deg);
+    animation: hero-char-wave 0.62s cubic-bezier(0.2, 0.75, 0.2, 1) both;
+    will-change: transform, opacity;
+  }
+
+  @keyframes hero-kicker-reveal {
+    0% {
+      opacity: 0;
+      transform: translateX(-28px);
+      clip-path: inset(0 100% 0 0);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateX(0);
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  @keyframes hero-char-wave {
+    0% {
+      opacity: 0;
+      transform: translateY(18px) scaleY(0.92) rotate(-4deg);
+    }
+
+    55% {
+      opacity: 1;
+      transform: translateY(-10px) scaleY(1.04) rotate(1deg);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0) scaleY(1) rotate(0deg);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-kicker,
+    .hero-title-char {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

@@ -1,0 +1,168 @@
+---
+const featureCards = [
+  {
+    title: "損益・パフォーマンス分析",
+    description:
+      "日々のトレード結果をカレンダー形式で可視化。モチベーション維持、トレードの傾向を把握し、改善点を明確にします。",
+    variant: "performance",
+  },
+  {
+    title: "自動利確予約（現物・信用対応）",
+    description:
+      "目標利益額を指定して自動利確。感情的な判断を排除し、計画通りのトレードを実現します。",
+    variant: "profit",
+  },
+  {
+    title: "トレードルール管理・振り返り",
+    description:
+      "ルール遵守を記録し、次に活かす。一貫した戦略を維持するための振り返り機能を提供します。",
+    variant: "rules",
+  },
+  {
+    title: "現物・信用取引の一元管理トラッカー",
+    description:
+      "保有している名柄の損益、平均価格、評価損益、損益予測を追跡。複数の取引タイプを横断して、全体像を常に確認できます。",
+    variant: "tracker",
+  },
+];
+---
+
+<section id="features" class="bg-[var(--bg-canvas)] px-5 pb-[140px] pt-[104px] md:px-8">
+  <div class="mx-auto max-w-[1440px]">
+    <div class="flex flex-col items-center gap-3.5 text-center">
+      <p
+        class="text-[20px] font-bold uppercase leading-5 tracking-[0.32em] text-[var(--text-tertiary)]"
+        style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;"
+      >
+        FEATURES
+      </p>
+      <h2 class="text-[clamp(34px,3.8vw,48px)] font-black leading-[1.33] tracking-[0.12em] text-[var(--text-primary)]">
+        保有データを可視化・分析し<br />成長を加速させよう
+      </h2>
+    </div>
+
+    <div class="mt-16 grid gap-x-10 gap-y-14 md:grid-cols-2">
+      {featureCards.map((card) => (
+        <article class="mx-auto flex w-full max-w-[480px] flex-col gap-10">
+          <div class:list={[
+            "relative h-64 overflow-hidden rounded-[var(--radius-card)] shadow-[var(--shadow-card)]",
+            card.variant === "performance" && "bg-[var(--bg-subtle)]",
+            card.variant === "profit" && "bg-gradient-to-b from-[#fff5db] to-[#fff9e8]",
+            card.variant === "rules" && "bg-gradient-to-b from-[#f8fafc] to-[#eef2ff]",
+            card.variant === "tracker" && "bg-gradient-to-b from-[#fff5db] to-[#fffaf0]",
+          ]}>
+            {card.variant === "performance" && (
+              <>
+                <div class="absolute left-[32px] top-[28px] h-[146px] w-[170px] rounded-[10px] bg-white shadow-[1px_1px_0.88px_rgba(0,0,0,0.05)]"></div>
+                <div class="absolute left-[58px] top-[50px] h-[82px] w-[120px] rounded-md bg-[#f3f4f6]"></div>
+                <div class="absolute right-[36px] top-[34px] space-y-4">
+                  <div class="h-9 w-44 rounded-full bg-white shadow-[0_0.88px_1.76px_rgba(0,0,0,0.08)]"></div>
+                  <div class="ml-auto h-8 w-40 rounded-full bg-white shadow-[0_0.88px_1.76px_rgba(0,0,0,0.08)]"></div>
+                  <div class="ml-auto h-6 w-32 rounded-full bg-white shadow-[0_0.88px_1.76px_rgba(0,0,0,0.08)]"></div>
+                </div>
+                <div class="absolute left-[220px] top-[46px] text-right text-[24px] font-bold leading-3 text-emerald-500">¥</div>
+                <div
+                  class="absolute left-[242px] top-[44px] text-right text-[20px] font-bold leading-3 text-emerald-500"
+                  style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;"
+                >
+                  500,000
+                </div>
+                <div
+                  class="absolute left-[262px] top-[114px] text-right text-[16px] font-bold leading-3 text-emerald-500"
+                  style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;"
+                >
+                  30,000
+                </div>
+                <div
+                  class="absolute left-[301px] top-[176px] text-right text-[14px] font-bold leading-[9px] text-red-500"
+                  style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;"
+                >
+                  -10,000
+                </div>
+                <div class="absolute bottom-[22px] left-[38px] h-14 w-14 rounded-full bg-white"></div>
+                <div class="absolute bottom-[34px] left-[86px] h-16 w-16 rounded-full bg-[#fde68a]"></div>
+                <div class="absolute bottom-[24px] left-[136px] h-20 w-20 rounded-full bg-[#fca5a5]"></div>
+              </>
+            )}
+
+            {card.variant === "profit" && (
+              <>
+                <div class="absolute left-[34px] top-[34px] h-36 w-56 rounded-xl bg-white shadow-[0_0_9.28px_rgba(0,0,0,0.10)]"></div>
+                <div class="absolute left-[34px] top-[182px] h-10 w-48 rounded-full bg-neutral-100"></div>
+                <div class="absolute left-[34px] top-[204px] h-2 w-20 rounded-full bg-neutral-100"></div>
+                <div class="absolute left-[274px] top-[34px] flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-b from-green-300 to-teal-500"></div>
+                <div class="absolute left-[292px] top-[108px] rounded-[4.91px] bg-[#3b82f6] px-5 py-1.5 text-[12px] font-bold text-white">
+                  予約確定
+                </div>
+                <div class="absolute left-[242px] top-[156px] flex w-44 items-center justify-between">
+                  <div class="flex items-center gap-2">
+                    <div class="h-7 w-7 rounded-full bg-zinc-300"></div>
+                    <div class="text-[20px] font-bold leading-4 text-gray-400">BTC</div>
+                  </div>
+                  <div class="h-2 w-3.5 rounded-lg bg-amber-400/50"></div>
+                </div>
+                <div class="absolute bottom-[16px] left-[56px] h-20 w-20 rotate-[-15deg] rounded-full bg-[#fcd34d]"></div>
+                <div class="absolute bottom-[44px] right-[54px] h-7 w-7 rounded-full bg-[#f59e0b]"></div>
+              </>
+            )}
+
+            {card.variant === "rules" && (
+              <>
+                <div class="absolute left-[120px] top-[42px] h-32 w-60 rounded-xl bg-white shadow-[0_0.88px_6.18px_rgba(0,0,0,0.09)]"></div>
+                <div class="absolute left-[146px] top-[76px] space-y-3">
+                  <div class="h-2 w-36 rounded-full bg-neutral-100"></div>
+                  <div class="h-2 w-16 rounded-full bg-neutral-100"></div>
+                  <div class="text-[14px] font-bold tracking-[0.12em] text-gray-400">-2%</div>
+                  <div class="text-[14px] font-bold tracking-[0.08em] text-gray-400">感情的な時は触らない</div>
+                </div>
+                <div class="absolute left-[70px] top-[50px] h-5 w-5 rounded-full bg-gradient-to-b from-green-300 to-teal-500"></div>
+                <div class="absolute left-[84px] top-[144px] h-5 w-5 rounded-full border-4 border-neutral-200 bg-white"></div>
+                <div class="absolute bottom-[18px] left-[34px] h-20 w-20 rotate-[13deg] rounded-full bg-[#f9a8d4]"></div>
+                <div class="absolute bottom-[28px] right-[36px] h-24 w-28 rotate-[-5deg] rounded-[24px] bg-[#c7d2fe]"></div>
+              </>
+            )}
+
+            {card.variant === "tracker" && (
+              <>
+                <div class="absolute left-[32px] top-[44px] space-y-4">
+                  <div class="flex w-48 items-center justify-between rounded-xl bg-white px-3 py-1.5 shadow-[0_0.91px_6.43px_rgba(0,0,0,0.09)]">
+                    <div class="flex items-center gap-2">
+                      <div class="h-9 w-9 rounded-full bg-zinc-300"></div>
+                      <span class="text-[14px] font-bold text-gray-400">ETH</span>
+                    </div>
+                    <span class="text-[14px] font-bold text-emerald-500">5,620</span>
+                  </div>
+                  <div class="flex w-48 items-center justify-between rounded-xl bg-white px-3 py-1.5 shadow-[0_0.91px_6.43px_rgba(0,0,0,0.09)]">
+                    <div class="flex items-center gap-2">
+                      <div class="h-9 w-9 rounded-full bg-zinc-300"></div>
+                      <span class="text-[14px] font-bold text-gray-400">BTC</span>
+                    </div>
+                    <span class="text-[14px] font-bold text-emerald-500">1,170</span>
+                  </div>
+                  <div class="flex w-48 items-center justify-between rounded-xl bg-white px-3 py-1.5 shadow-[0_0.91px_6.43px_rgba(0,0,0,0.09)]">
+                    <div class="flex items-center gap-2">
+                      <div class="h-9 w-9 rounded-full bg-zinc-300"></div>
+                      <span class="text-[14px] font-bold text-gray-400">DOGE</span>
+                    </div>
+                    <span class="text-[14px] font-bold text-red-500">-2,010</span>
+                  </div>
+                </div>
+                <div class="absolute bottom-[16px] right-[44px] h-20 w-20 rotate-[13deg] rounded-full bg-[#fdba74]"></div>
+                <div class="absolute right-[210px] top-[36px] h-10 w-10 rounded bg-zinc-300"></div>
+              </>
+            )}
+          </div>
+
+          <div class="flex flex-col gap-6">
+            <h3 class="text-[30px] font-extrabold leading-10 tracking-[-0.02em] text-[var(--text-secondary)]">
+              {card.title}
+            </h3>
+            <p class="text-[16px] leading-6 text-[var(--text-tertiary)]">
+              {card.description}
+            </p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
