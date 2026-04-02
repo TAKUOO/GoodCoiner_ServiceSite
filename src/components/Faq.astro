@@ -3,20 +3,28 @@ const faqs = [
   {
     question: "セキュリティとAPIキーの管理は安全ですか？",
     answer:
-      "はい、安全に設計されています。グッドコイナーでは、APIキーやトレードデータを外部サーバーに送信せず、すべてお使いのデバイス内で管理します。そのため、第三者がデータにアクセスすることはなく、安心してご利用いただけます。",
+      "サイト内では、トレードデータやAPIキーは外部送信せず、すべてデバイス内で管理すると案内しています。ローカル管理を前提にした設計で、安心してトレードに集中できることを訴求しています。",
     open: true,
   },
   {
     question: "どの取引所に対応していますか？",
+    answer:
+      "現在は GMOコイン ユーザー向けに提供しています。対応取引所は今後順次拡張予定です。",
   },
   {
     question: "MacとWindowsどちらでも使えますか？",
+    answer:
+      "現時点でサイト上に案内されているのは Mac版 ダウンロードです。Windows 版についての明記は現状の案内内にはありません。",
   },
   {
     question: "無料プランに期限はありますか？",
+    answer:
+      "はい。料金プランの案内では、FREE プランは 14日間の無料トライアル として記載されています。より本格的な利用向けに PRO と LIFE TIME も用意されています。",
   },
   {
     question: "だれでも使用できますか？",
+    answer:
+      "現時点では、GMOコイン ユーザーを対象に順次提供している段階です。今後、対象ユーザーや対応環境を広げていく予定です。",
   },
 ];
 ---
@@ -28,24 +36,21 @@ const faqs = [
         <p class="text-[20px] font-black leading-5 tracking-[0.12em] text-[var(--text-tertiary)]">
           よくあるご質問
         </p>
-        <h2
-          class="text-[72px] font-black leading-[108px] tracking-[0.04em] text-[var(--text-primary)]"
-          style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;"
-        >
+        <h2 class="font-avenir text-[72px] font-black leading-[108px] tracking-[0.04em] text-[var(--text-primary)]">
           FAQ
         </h2>
       </div>
 
       <div class="w-full space-y-4">
         {faqs.map((item) => (
-          <article class="rounded-lg bg-[var(--bg-elevated)] p-6 outline outline-2 outline-offset-[-2px] outline-[var(--border-strong)]">
-            <div class="flex items-center justify-between gap-6">
+          <details
+            class="faq-item group rounded-lg bg-[var(--bg-elevated)] p-6 outline outline-2 outline-offset-[-2px] outline-[var(--border-strong)] open:bg-[var(--bg-elevated)]"
+            open={item.open}
+          >
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-6 [&::-webkit-details-marker]:hidden">
               <div class="flex items-center gap-4">
                 <div class="flex h-10 w-10 items-center justify-center rounded bg-[var(--accent-yellow)]">
-                  <span
-                    class="text-[24px] font-bold leading-6 tracking-[0.04em] text-[var(--text-primary)]"
-                    style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;"
-                  >
+                  <span class="font-avenir text-[24px] font-bold leading-6 tracking-[0.04em] text-[var(--text-primary)]">
                     Q
                   </span>
                 </div>
@@ -54,18 +59,16 @@ const faqs = [
                 </div>
               </div>
 
-              <div class="flex h-10 w-10 items-center justify-center">
-                <span class="text-[28px] leading-none text-[var(--text-primary)]">{item.open ? "−" : "+"}</span>
+              <div class="faq-icon flex h-10 w-10 items-center justify-center">
+                <span class="faq-icon-plus text-[28px] leading-none text-[var(--text-primary)]">+</span>
+                <span class="faq-icon-minus hidden text-[28px] leading-none text-[var(--text-primary)]">−</span>
               </div>
-            </div>
+            </summary>
 
-            {item.open && (
-              <div class="mt-6 flex items-start gap-4">
-                <div class="flex h-10 w-10 items-center justify-center rounded bg-[#17171c]">
-                  <span
-                    class="text-[24px] font-bold leading-6 tracking-[0.04em] text-[var(--text-inverse)]"
-                    style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;"
-                  >
+            <div class="faq-answer-grid">
+              <div class="faq-answer-inner mt-6 flex items-start gap-4">
+                <div class="flex h-10 w-10 items-center justify-center rounded bg-[var(--text-primary)]">
+                  <span class="font-avenir text-[24px] font-bold leading-6 tracking-[0.04em] text-[var(--text-inverse)]">
                     A
                   </span>
                 </div>
@@ -73,10 +76,52 @@ const faqs = [
                   {item.answer}
                 </p>
               </div>
-            )}
-          </article>
+            </div>
+          </details>
         ))}
       </div>
     </div>
   </div>
 </section>
+
+<style>
+  .faq-item .faq-answer-grid {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 260ms ease;
+  }
+
+  .faq-item .faq-answer-inner {
+    min-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transform: translateY(-8px);
+    transition:
+      opacity 220ms ease,
+      transform 260ms ease;
+  }
+
+  .faq-item[open] .faq-answer-grid {
+    grid-template-rows: 1fr;
+  }
+
+  .faq-item[open] .faq-answer-inner {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .faq-item[open] .faq-icon-plus {
+    display: none;
+  }
+
+  .faq-item[open] .faq-icon-minus {
+    display: inline;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-item .faq-answer-grid,
+    .faq-item .faq-answer-inner {
+      transition: none;
+    }
+  }
+</style>

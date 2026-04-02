@@ -4,12 +4,17 @@ import "../styles/global.css";
 interface Props {
   title?: string;
   description?: string;
+  ogImage?: string;
 }
 
 const {
   title = "GoodCoiner",
   description = "トレードを、感覚から仕組みへ。Be a Good Coiner",
+  ogImage = "/ogp.png",
 } = Astro.props;
+
+const canonicalUrl = Astro.url;
+const ogImageUrl = new URL(ogImage, Astro.site ?? canonicalUrl).toString();
 ---
 
 <!doctype html>
@@ -19,6 +24,17 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:locale" content="ja_JP" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
   </head>
   <body>
     <slot />
