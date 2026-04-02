@@ -1,9 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=Noto+Sans+JP:wght@400;700;900&display=swap");
 @import "tailwindcss";
 
 :root {
   /* Figma source tokens */
   --figma-bg-surface: #0d1421;
-  --figma-text-body: #333546;
+  --figma-bg-input: #333546;
+  --figma-text-strong: #21130d;
+  --figma-text-body: #64748b;
   --figma-text-muted: #959eaa;
   --figma-accent-yellow: #ffcd18;
   --figma-bg-canvas: #ffffff;
@@ -22,6 +25,8 @@
 
   --text-primary: var(--figma-bg-surface);
   --text-secondary: var(--figma-text-body);
+  --text-heading-card: var(--figma-bg-input);
+  --text-heading-soft: var(--figma-text-strong);
   --text-tertiary: var(--figma-text-muted);
   --text-inverse: var(--figma-bg-canvas);
   --text-inverse-muted: #94a3b8;
@@ -42,6 +47,22 @@
   --radius-pill: 82px;
   --radius-card: 16px;
   --radius-panel: 48px;
+
+  --font-avenir: "Avenir Next", "Avenir", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-inter-jp: "Inter", "Noto Sans JP", sans-serif;
+}
+
+.font-avenir {
+  font-family: var(--font-avenir);
+}
+
+.font-inter-jp {
+  font-family: var(--font-inter-jp);
+}
+
+.font-black-900 {
+  font-weight: 900;
+  font-synthesis: none;
 }
 
 * {

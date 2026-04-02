@@ -6,56 +6,87 @@ const navItems = [
 ];
 ---
 
-<header class="sticky top-5 z-50 px-4 pt-5 md:px-8">
-  <nav class="mx-auto flex h-16 max-w-[1094px] items-center justify-between rounded-[var(--radius-pill)] bg-white/95 px-8 pr-4 shadow-[var(--shadow-float)]">
-    <a
-      href="/"
-      class="flex items-center"
-      aria-label="GoodCoiner"
-    >
-      <img
-        src="/assets/logo/header_logo.svg"
-        alt="グッドコイナー"
-        class="h-auto w-[132px] md:w-[160px]"
-      />
-    </a>
+<>
+  <div class="h-[100px]" aria-hidden="true"></div>
+  <header class="fixed inset-x-0 top-5 z-50 px-4 md:px-8">
+    <nav class="header-shell mx-auto flex h-16 max-w-[1094px] items-center justify-between rounded-[var(--radius-pill)] bg-white/95 px-8 pr-4 shadow-[var(--shadow-float)]">
+      <a
+        href="/"
+        class="flex items-center"
+        aria-label="GoodCoiner"
+      >
+        <img
+          src="/assets/logo/header_logo.svg"
+          alt="グッドコイナー"
+          class="h-auto w-[132px] md:w-[160px]"
+        />
+      </a>
 
-    <div class="hidden items-center md:flex">
-      {navItems.map((item) => (
+      <div class="hidden items-center md:flex">
+        {navItems.map((item) => (
+          <a
+            href={item.href}
+            class="flex items-center gap-1 px-5 text-[14px] font-bold tracking-[0.03em] text-[var(--text-primary)] transition hover:opacity-80"
+          >
+            {item.label}
+            {item.external && (
+              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none">
+                <path
+                  d="M6.25 13.75L13.75 6.25M13.75 6.25H8.75M13.75 6.25V11.25"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+            )}
+          </a>
+        ))}
+
         <a
-          href={item.href}
-          class="flex items-center gap-1 px-5 text-[14px] font-bold tracking-[0.03em] text-[var(--text-primary)] transition hover:opacity-80"
+          href="#download"
+          class="ml-4 inline-flex items-center gap-1 rounded-[120px] bg-[var(--accent-yellow)] px-4 py-2 text-[14px] font-bold leading-4 text-[var(--text-primary)] transition hover:bg-[var(--accent-yellow-hover)]"
         >
-          {item.label}
-          {item.external && (
-            <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none">
-              <path
-                d="M6.25 13.75L13.75 6.25M13.75 6.25H8.75M13.75 6.25V11.25"
-                stroke="currentColor"
-                stroke-width="1.6"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-          )}
+          ダウンロード
+          <img src="/assets/icons/download.svg" alt="" aria-hidden="true" class="h-5 w-5" />
         </a>
-      ))}
+      </div>
 
       <a
         href="#download"
-        class="ml-4 inline-flex items-center gap-1 rounded-[120px] bg-[var(--accent-yellow)] px-4 py-2 text-[14px] font-bold leading-4 text-[var(--text-primary)] transition hover:bg-[var(--accent-yellow-hover)]"
+        class="inline-flex items-center gap-1 rounded-[120px] bg-[var(--accent-yellow)] px-4 py-2 text-[13px] font-bold text-[var(--text-primary)] md:hidden"
       >
         ダウンロード
-        <img src="/assets/icons/download.svg" alt="" aria-hidden="true" class="h-5 w-5" />
+        <img src="/assets/icons/download.svg" alt="" aria-hidden="true" class="h-4 w-4" />
       </a>
-    </div>
+    </nav>
+  </header>
+</>
 
-    <a
-      href="#download"
-      class="inline-flex items-center gap-1 rounded-[120px] bg-[var(--accent-yellow)] px-4 py-2 text-[13px] font-bold text-[var(--text-primary)] md:hidden"
-    >
-      ダウンロード
-      <img src="/assets/icons/download.svg" alt="" aria-hidden="true" class="h-4 w-4" />
-    </a>
-  </nav>
-</header>
+<style>
+  .header-shell {
+    opacity: 0;
+    transform: translateY(-22px);
+    animation: header-shell-fade 0.52s cubic-bezier(0.22, 0.8, 0.2, 1) 2.12s both;
+  }
+
+  @keyframes header-shell-fade {
+    from {
+      opacity: 0;
+      transform: translateY(-22px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .header-shell {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>

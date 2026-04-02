@@ -26,7 +26,7 @@ const heroTitleChars = [..."Be a Good Coiner"];
     </h1>
 
     <p
-      class="mx-auto max-w-[760px] text-center text-[18px] font-medium leading-[36px] tracking-[0.04em] text-[var(--text-secondary)]"
+      class="hero-body mx-auto max-w-[760px] text-center text-[18px] font-medium leading-[36px] tracking-[0.04em] text-[var(--text-secondary)]"
       style="font-family: 'Inter', 'Noto Sans JP', sans-serif;"
     >
       グッドコイナーは、感覚や感情に左右されず、<br />
@@ -34,7 +34,7 @@ const heroTitleChars = [..."Be a Good Coiner"];
       「Be a Good Coiner」を合言葉に、再現性のあるトレードを優しくサポートします。
     </p>
 
-    <div class="mx-auto mt-9 flex w-80 flex-col items-center gap-5">
+    <div class="hero-cta mx-auto mt-9 flex w-80 flex-col items-center gap-5">
       <a
         id="download"
         href="#"
@@ -54,20 +54,17 @@ const heroTitleChars = [..."Be a Good Coiner"];
     </div>
   </div>
 
-  <div class="mx-auto mt-14 max-w-[1320px] px-4 md:px-6">
-    <div class="relative pb-[14px]">
-      <div class="absolute inset-x-0 bottom-0 top-[14px] rounded-[var(--radius-panel)] border-[11px] border-[var(--border-soft)] bg-[#d4d4d8]"></div>
-      <div class="relative rounded-[var(--radius-panel)] border-[11px] border-[var(--border-soft)] bg-[var(--bg-product-surface)] shadow-[var(--shadow-panel)]">
-        <div class="overflow-hidden rounded-[37px] bg-[var(--bg-product-surface)]">
-          <video
-            src="/dashboard.mp4"
-            autoplay
-            muted
-            loop
-            playsinline
-            class="block h-auto w-full"
-          ></video>
-        </div>
+  <div class="hero-video-wrap mx-auto mt-14 max-w-[1320px] px-4 md:px-6">
+    <div class="rounded-[var(--radius-panel)] border-[14px] border-[#eeeeee] bg-[#eeeeee]">
+      <div class="overflow-hidden rounded-[34px] bg-[#eeeeee]">
+        <video
+          src="/dashboard.mp4"
+          autoplay
+          muted
+          loop
+          playsinline
+          class="block h-auto w-full"
+        ></video>
       </div>
     </div>
   </div>
@@ -92,6 +89,23 @@ const heroTitleChars = [..."Be a Good Coiner"];
     transform: translateY(18px) scaleY(0.92) rotate(-4deg);
     animation: hero-char-wave 0.62s cubic-bezier(0.2, 0.75, 0.2, 1) both;
     will-change: transform, opacity;
+  }
+
+  .hero-body {
+    opacity: 0;
+    animation: hero-kicker-reveal 0.56s cubic-bezier(0.2, 0.8, 0.2, 1) 0.78s both;
+  }
+
+  .hero-cta {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: hero-cta-reveal 0.42s cubic-bezier(0.22, 0.8, 0.2, 1) 1.32s both;
+  }
+
+  .hero-video-wrap {
+    opacity: 0;
+    transform: translateY(18px) scale(0.985);
+    animation: hero-video-reveal 0.62s cubic-bezier(0.2, 0.82, 0.2, 1) 1.62s both;
   }
 
   @keyframes hero-kicker-reveal {
@@ -125,12 +139,42 @@ const heroTitleChars = [..."Be a Good Coiner"];
     }
   }
 
+  @keyframes hero-cta-reveal {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes hero-video-reveal {
+    0% {
+      opacity: 0;
+      transform: translateY(18px) scale(0.985);
+      filter: blur(8px);
+    }
+
+    100% {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .hero-kicker,
-    .hero-title-char {
+    .hero-title-char,
+    .hero-body,
+    .hero-cta,
+    .hero-video-wrap {
       animation: none;
       opacity: 1;
       transform: none;
+      filter: none;
     }
   }
 </style>

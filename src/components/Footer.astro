@@ -1,57 +1,113 @@
-<footer id="contact" class="bg-[var(--bg-product-surface)] px-5 pb-14 pt-[155px] text-[var(--text-inverse)] md:px-8">
-  <div class="mx-auto max-w-[1094px]">
-    <div class="flex flex-col items-center text-center">
-      <p class="text-[24px] font-bold leading-10 tracking-[0.08em] text-[var(--text-inverse)]">
-        トレードを、感覚から仕組みへ。
-      </p>
-      <h2
-        class="mt-5 text-[clamp(54px,6vw,96px)] font-black leading-[107px] tracking-[-0.04em] text-[var(--text-inverse)]"
-        style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;"
-      >
-        Be a Good Coiner
-      </h2>
-      <p class="mt-8 max-w-[1094px] text-[16px] font-medium leading-8 tracking-[0.04em] text-[var(--text-inverse)]">
-        グッドコイナーは、感覚や感情に左右されず、<br />
-        明確なルールと目的に基づいて暗号資産を売買するトレード管理アプリです。<br />
-        「Be a Good Coiner」を合言葉に、再現性のあるトレードを優しくサポートします。
-      </p>
+<footer id="contact" class="relative overflow-hidden bg-[var(--bg-product-surface)] px-5 pb-14 pt-[155px] text-[var(--text-inverse)] md:px-8">
+  <img
+    src="/figma/footer/bg.svg"
+    alt=""
+    aria-hidden="true"
+    class="pointer-events-none absolute left-0 top-0 w-full max-w-none select-none"
+    loading="lazy"
+  />
 
-      <a
-        id="download"
-        href="#"
-        class="mt-9 inline-flex items-center gap-2.5 rounded-[82px] bg-[var(--accent-yellow)] px-8 py-4 text-[18px] font-bold leading-8 tracking-[-0.02em] text-[var(--text-primary)]"
-      >
-        <span class="flex h-7 w-7 items-center justify-center rounded-full bg-white/70"></span>
-        Mac版をダウンロード
-      </a>
+  <div class="relative z-10 mx-auto flex max-w-[1094px] flex-col gap-24">
+    <div class="flex flex-col items-center gap-12 text-center">
+      <div class="flex w-full max-w-[934px] flex-col items-center gap-8">
+        <div class="flex w-full flex-col items-center gap-4">
+          <p
+            class="font-['Noto_Sans_JP'] text-[26px] font-bold leading-[39px] tracking-[1.04px] text-[var(--text-inverse)]"
+          >
+            トレードを、感覚から仕組みへ。
+          </p>
+          <h2
+            class="font-avenir text-[clamp(68px,7.5vw,107px)] font-black leading-[107px] text-[var(--text-inverse)] md:whitespace-nowrap"
+          >
+            Be a Good Coiner
+          </h2>
+        </div>
 
-      <p class="mt-10 whitespace-nowrap text-center text-[12px] leading-3 tracking-[0.08em] text-[var(--text-tertiary)]">
-        ※現在GMOコインユーザーのみ利用可能。順次拡張予定です。
-      </p>
+        <p
+          class="w-full text-center font-['Noto_Sans_JP'] text-[16px] font-medium leading-8 tracking-[0.64px] text-[var(--text-inverse)]"
+        >
+          グッドコイナーは、感覚や感情に左右されず、<br />
+          明確なルールと目的に基づいて暗号資産を売買するトレード管理アプリです。<br />
+          「Be a Good Coiner」を合言葉に、再現性のあるトレードを優しくサポートします。
+        </p>
+      </div>
+
+      <div class="flex w-80 flex-col items-center gap-5">
+        <a
+          id="download"
+          href="#"
+          class="inline-flex items-center justify-center gap-2.5 rounded-[82px] bg-[var(--accent-yellow)] px-8 py-4"
+        >
+          <img
+            src="/assets/icons/Finder_Icon_macOS.png"
+            alt=""
+            aria-hidden="true"
+            class="h-7 w-7"
+            loading="lazy"
+          />
+          <span
+            class="font-['Noto_Sans_JP'] text-[18px] font-bold leading-[32.38px] tracking-[0.18px] text-[var(--text-primary)]"
+          >
+            Mac版をダウンロード
+          </span>
+        </a>
+
+        <p
+          class="w-full whitespace-nowrap text-center font-['Noto_Sans_JP'] text-[12px] font-normal leading-3 tracking-[0.48px] text-[var(--text-tertiary)]"
+        >
+          ※現在GMOコインユーザーのみ利用可能。順次拡張予定です。
+        </p>
+      </div>
     </div>
 
-    <div class="mt-24 flex flex-col gap-6 border-t border-[var(--border-inverse-soft)] pt-8 md:flex-row md:items-start md:justify-between">
-      <a
-        href="/"
-        class="text-[17px] font-bold tracking-[-0.04em] text-[var(--text-inverse)]"
-        style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;"
-      >
-        グッドコイナー
+    <div class="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+      <a href="/" class="inline-flex items-center">
+        <img
+          src="/assets/logo/header_logo.svg"
+          alt="グッドコイナー"
+          class="h-auto w-[196px] brightness-0 invert"
+          loading="lazy"
+        />
       </a>
 
-      <div class="md:text-right">
-        <div class="flex flex-col gap-3 text-[12px] font-bold tracking-[0.04em] text-[var(--text-inverse)] md:flex-row md:justify-end md:gap-8">
-          <a href="#contact">お問い合わせ</a>
-          <a href="#howto">利用方法</a>
-          <a href="#">プライバシーポリシー</a>
-          <a href="#">特定商取引法に基づく表記</a>
+      <div class="flex w-full max-w-[568px] flex-col items-end gap-3">
+        <div class="flex w-full flex-nowrap items-center justify-end gap-6">
+          <a
+            href="#contact"
+            class="font-inter-jp text-[13px] font-bold leading-[32.38px] tracking-[1.04px] text-[var(--text-inverse)]"
+          >
+            お問い合わせ
+          </a>
+          <a
+            href="#howto"
+            class="inline-flex items-center gap-0.5 font-['Noto_Sans_JP'] text-[13px] font-bold leading-[32.38px] tracking-[0.52px] text-[var(--text-inverse)]"
+          >
+            利用方法
+            <img
+              src="/assets/icons/arrow_outward.svg"
+              alt=""
+              aria-hidden="true"
+              class="h-6 w-6 brightness-0 invert"
+              loading="lazy"
+            />
+          </a>
+          <a
+            href="#"
+            class="font-inter-jp text-[13px] font-bold leading-[32.38px] tracking-[1.04px] text-[var(--text-inverse)]"
+          >
+            プライバシーポリシー
+          </a>
+          <a
+            href="#"
+            class="font-inter-jp whitespace-nowrap text-[13px] font-bold leading-[32.38px] tracking-[1.04px] text-[var(--text-inverse)]"
+          >
+            特定商取引法に基づく表記
+          </a>
         </div>
-        <div
-          class="mt-3 text-[12px] font-normal tracking-[0.12em] text-slate-500"
-          style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;"
-        >
+
+        <p class="font-avenir w-full text-right text-[12px] font-normal leading-3 tracking-[1.56px] text-[var(--text-secondary)]">
           © 2026 Good Coiner. All rights reserved.
-        </div>
+        </p>
       </div>
     </div>
   </div>

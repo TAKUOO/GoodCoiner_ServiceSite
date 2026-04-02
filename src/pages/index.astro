@@ -14,8 +14,18 @@ import Footer from "@/components/Footer.astro";
   <Header />
   <main>
     <Hero />
-    <Features />
-    <Safety />
+    <div class="relative -mb-px bg-white">
+      <div class="relative z-10">
+        <Features />
+        <Safety />
+        <img
+          src="/figma/safety/bg.svg"
+          alt=""
+          aria-hidden="true"
+          class="pointer-events-none absolute bottom-[-1px] left-1/2 z-0 w-[max(1438px,100vw)] max-w-none -translate-x-1/2 select-none"
+        />
+      </div>
+    </div>
     <Story />
     <Pricing />
     <Faq />
