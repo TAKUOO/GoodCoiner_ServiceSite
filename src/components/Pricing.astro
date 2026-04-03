@@ -2,10 +2,12 @@
 const plans = [
   {
     name: "FREE",
-    subtitle: "14日間の無料トライアル",
+    kicker: "14日間の無料トライアル",
+    headline: "気楽に始めたい人向け",
     price: "0",
-    yenOffset: "left-[4px]",
-    cta: "outline",
+    unit: "/月",
+    button: "無料で試す",
+    accent: "yellow",
     features: [
       "FREEプランの全機能",
       "信用取引・レバレッジ管理",
@@ -15,9 +17,12 @@ const plans = [
   },
   {
     name: "PRO",
-    subtitle: "本格的なトレーダー向け",
+    kicker: "いつでも解約OK",
+    headline: "まずはお試し",
     price: "1,080",
-    cta: "filled",
+    unit: "/月",
+    button: "月額ではじめる",
+    accent: "dark",
     badge: "一番人気！",
     features: [
       "FREEプランの全機能",
@@ -28,9 +33,12 @@ const plans = [
   },
   {
     name: "LIFE TIME",
-    subtitle: "プロフェッショナル、法人向け",
+    kicker: "約10ヶ月で元が取れる",
+    headline: "使い続けたい人向け",
     price: "9,800",
-    cta: "outline",
+    unit: "",
+    button: "買い切りではじめる",
+    accent: "dark",
     features: [
       "FREEプランの全機能",
       "信用取引・レバレッジ管理",
@@ -41,102 +49,100 @@ const plans = [
 ];
 ---
 
-<section id="pricing" class="relative overflow-hidden bg-[var(--bg-surface-muted)] px-5 pb-[140px] pt-[160px] md:px-8">
-  <div class="absolute inset-x-0 top-0 h-72 rounded-b-[10500px] bg-white"></div>
-  <div class="absolute inset-x-0 bottom-0 h-72 rounded-t-[10500px] bg-white"></div>
+<section id="pricing" class="relative overflow-hidden bg-white px-5 pb-[120px] pt-0 md:px-8">
+  <div class="absolute inset-x-0 top-0 h-[274px] bg-[var(--bg-product-surface)]"></div>
+  <img
+    src="/figma/pricing/bg.svg"
+    alt=""
+    aria-hidden="true"
+    class="pointer-events-none absolute inset-x-0 top-0 z-10 h-auto w-full select-none"
+    loading="lazy"
+  />
 
-  <div class="relative mx-auto max-w-[1094px]">
+  <div class="relative z-20 mx-auto flex max-w-[1040px] flex-col items-center gap-6 pt-[141px]">
     <div class="flex flex-col items-center gap-3.5 text-center">
-      <p
-        class="text-[20px] font-bold leading-5 tracking-[0.32em] text-[var(--text-tertiary)]"
-        style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;"
-      >
+      <p class="font-avenir text-[20px] font-bold leading-5 tracking-[2.4px] text-[var(--text-tertiary)]">
         料金プラン
       </p>
-      <h2 class="text-[clamp(34px,3.8vw,48px)] font-black leading-[1.33] tracking-[0.12em] text-[var(--text-primary)]">
-        必要な機能に応じて<br />アップグレードできます
+      <h2 class="font-inter-jp text-[clamp(34px,4.2vw,44px)] font-black leading-[63.8px] tracking-[1.76px] text-[var(--text-primary)]">
+        あなたに合った<br />プランを選べます
       </h2>
     </div>
 
-    <div class="mt-16 grid gap-6 md:grid-cols-3">
+    <div class="grid w-full gap-6 md:grid-cols-3">
       {plans.map((plan) => (
-        <article class:list={[
-          "relative rounded-[32px] border-2 border-[var(--border-strong)] bg-[var(--bg-elevated)] px-10 pb-10 pt-24",
-          plan.cta === "filled" && "shadow-[0_10px_24px_rgba(0,0,0,0.08)]",
-        ]}>
+        <article class="relative flex min-h-[564px] flex-col rounded-[32px] border-2 border-[var(--border-strong)] bg-white px-8 pb-8 pt-8">
           {plan.badge && (
-            <div class="absolute inset-x-0 top-0 flex h-12 items-center justify-center rounded-t-[28px] bg-[var(--accent-yellow)] text-[16px] font-bold leading-8 tracking-[0.04em] text-[var(--text-primary)]">
-              {plan.badge}
+            <div class="absolute inset-x-[-2px] top-[-2px] flex h-12 items-center justify-center rounded-t-[30px] border-2 border-[var(--border-strong)] bg-[var(--accent-yellow)]">
+              <span class="font-['Noto_Sans_JP'] text-[16px] font-bold leading-[32.38px] tracking-[0.8px] text-[var(--text-primary)]">
+                {plan.badge}
+              </span>
             </div>
           )}
 
-          <div
-            class="text-[24px] font-bold leading-6 tracking-[0.12em] text-[var(--text-primary)]"
-            style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;"
-          >
-            {plan.name}
-          </div>
-          <div
-            class="mt-8 text-[14px] font-semibold leading-4 tracking-[0.2em] text-[var(--text-tertiary)]"
-            style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;"
-          >
-            {plan.subtitle}
-          </div>
+          <div class:list={["flex flex-1 flex-col", plan.badge && "pt-12"]}>
+            <div class="font-avenir text-[24px] font-bold leading-6 tracking-[2.88px] text-[var(--text-primary)]">
+              {plan.name}
+            </div>
 
-          <div class="mt-8 flex items-end gap-2 text-[var(--text-primary)]">
-            <span
-              class="pb-1 text-[24px] font-medium leading-6 tracking-[0.12em]"
-              style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;"
-            >
-              ￥
-            </span>
-            <span
-              class="text-[48px] font-bold leading-[48px]"
-              style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;"
-            >
-              {plan.price}
-            </span>
-            <span
-              class="pb-1 text-[24px] font-medium leading-6 tracking-[0.12em]"
-              style="font-family: 'Avenir Next', 'Avenir', -apple-system, BlinkMacSystemFont, sans-serif;"
-            >
-              /月
-            </span>
-          </div>
-
-          <ul class="mt-12 space-y-3">
-            {plan.features.map((feature) => (
-              <li class="flex items-center gap-2 text-[16px] font-medium leading-4 tracking-[0.04em] text-[var(--text-primary)]">
-                <span class:list={[
-                  "flex h-6 w-6 items-center justify-center rounded-full",
-                  plan.cta === "filled" ? "bg-[var(--accent-yellow)]" : "bg-[var(--text-primary)]",
-                ]}>
-                  <span class:list={[
-                    "h-2.5 w-4 rotate-[-8deg] rounded-sm",
-                    plan.cta === "filled" ? "bg-[var(--text-primary)]" : "bg-[var(--text-inverse)]",
-                  ]}></span>
+            <div class="mt-7 flex items-end gap-1 text-[var(--text-primary)]">
+              <span class="font-avenir pb-[2px] text-[24px] font-medium leading-6 tracking-[2.88px]">￥</span>
+              <span class="font-avenir text-[48px] font-bold leading-[48px] tracking-[5.76px]">
+                {plan.price}
+              </span>
+              {plan.unit && (
+                <span class="font-avenir pb-[2px] text-[24px] font-medium leading-6 tracking-[2.88px]">
+                  {plan.unit}
                 </span>
-                {feature}
-              </li>
-            ))}
-          </ul>
+              )}
+            </div>
 
-          <a
-            href="#download"
-            class:list={[
-              "mt-12 inline-flex w-full justify-center rounded-[82px] px-10 py-2 text-[16px] font-bold leading-8 tracking-[-0.02em]",
-              plan.cta === "filled"
-                ? "bg-[var(--accent-yellow)] text-[var(--text-primary)]"
-                : "outline outline-2 outline-offset-[-2px] outline-[var(--border-strong)] text-[var(--text-primary)]",
-            ]}
-          >
-            このプランで始める
-          </a>
+            <p class="font-avenir mt-8 text-[14px] font-semibold leading-[14px] tracking-[1.68px] text-[var(--text-secondary)]">
+              {plan.kicker}
+            </p>
+
+            <h3 class="font-avenir mt-4 text-[24px] font-bold leading-6 tracking-[2.88px] text-[var(--text-primary)]">
+              {plan.headline}
+            </h3>
+
+            <ul class="mt-10 space-y-3">
+              {plan.features.map((feature) => (
+                <li class="flex items-center gap-2">
+                  <span class:list={[
+                    "flex h-6 w-6 items-center justify-center rounded-full",
+                    plan.accent === "yellow" ? "bg-[var(--accent-yellow)]" : "bg-[var(--text-primary)]",
+                  ]}>
+                    <span class:list={[
+                      "block h-[12px] w-[16px] rotate-[-8deg] rounded-sm",
+                      plan.accent === "yellow" ? "bg-[var(--text-primary)]" : "bg-[var(--text-inverse)]",
+                    ]}></span>
+                  </span>
+                  <span class="font-avenir text-[16px] font-medium leading-4 tracking-[0.64px] text-[var(--text-primary)]">
+                    {feature}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            <a
+              href="#download"
+              class:list={[
+                "mt-auto inline-flex min-h-[48px] w-full items-center justify-center rounded-[82px] px-10 py-2",
+                plan.accent === "yellow"
+                  ? "bg-[var(--accent-yellow)]"
+                  : "outline outline-2 outline-offset-[-2px] outline-[var(--border-strong)]",
+              ]}
+            >
+              <span class="font-['Noto_Sans_JP'] text-center text-[16px] font-bold leading-[32.38px] tracking-[0.16px] text-[var(--text-primary)]">
+                {plan.button}
+              </span>
+            </a>
+          </div>
         </article>
       ))}
     </div>
 
-    <p class="mt-14 text-center text-[12px] leading-3 tracking-[0.08em] text-[var(--text-tertiary)]">
+    <p class="font-['Noto_Sans_JP'] text-center text-[12px] font-normal leading-3 tracking-[0.48px] text-[var(--text-tertiary)]">
       ※現在GMOコインユーザーのみ利用可能。順次拡張予定です。
     </p>
   </div>
