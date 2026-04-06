@@ -3,7 +3,7 @@ const featureCards = [
   {
     title: "現物・信用取引の<br />一元管理トラッカー",
     description:
-      "保有している名柄の損益、平均価格、評価損益、損益予測を追跡。複数の取引タイプを横断して、全体像を常に確認できます。",
+      "保有している名柄の損益、平均価格、評価損益、損益予測を追跡（トラッキング）。複数の取引タイプを横断して、全体像を常に確認できます。",
     image: "/figma/features/tracker.png",
     imageAlt: "現物・信用取引の一元管理トラッカーのイメージ",
     offsetClass: "md:mt-0",
@@ -35,24 +35,31 @@ const featureCards = [
 ];
 ---
 
-<section id="features" class="bg-[var(--bg-canvas)] px-5 pb-[140px] pt-[104px] md:px-8">
+<section id="features" class="bg-[var(--bg-canvas)] px-6 pb-[96px] pt-[63px] md:px-8 md:pb-[140px] md:pt-[104px]">
   <div class="mx-auto max-w-[1440px]">
-    <div class="flex flex-col items-center gap-3.5 text-center">
+    <div class="flex flex-col items-center gap-[14px] text-center md:gap-3.5">
       <p
-        class="font-avenir text-[20px] font-bold uppercase leading-5 tracking-[0.32em] text-[var(--text-tertiary)]"
+        class="font-avenir text-[18px] font-bold uppercase leading-[18px] tracking-[0.12em] text-[var(--text-tertiary)] md:text-[20px] md:leading-5 md:tracking-[0.32em]"
       >
         FEATURES
       </p>
       <h2
-        class="font-inter-jp font-black-900 text-center text-[clamp(34px,3.8vw,44px)] font-black leading-[63.8px] tracking-[0.04em] text-[var(--text-primary)]"
+        class="font-inter-jp font-black-900 text-center text-[28px] font-black leading-[1.45] tracking-[0.04em] text-[var(--text-primary)] md:text-[clamp(34px,3.8vw,44px)] md:leading-[63.8px]"
       >
-        保有データを可視化・分析し<br />成長を加速させよう
+        <span class="md:hidden">
+          保有データを<br />
+          可視化・分析し成長を<br />
+          加速させよう
+        </span>
+        <span class="hidden md:inline">
+          保有データを可視化・分析し<br />成長を加速させよう
+        </span>
       </h2>
     </div>
 
-    <div class="mx-auto mt-[70px] flex max-w-[1060px] flex-wrap justify-start gap-x-[100px] gap-y-[48px]">
+    <div class="mx-auto mt-[40px] flex w-full flex-wrap justify-start gap-y-[44px] md:mt-[70px] md:max-w-[1060px] md:gap-x-[100px] md:gap-y-[48px]">
       {featureCards.map((card) => (
-        <article class:list={["flex w-full max-w-[480px] flex-col gap-10", card.offsetClass]}>
+        <article class:list={["flex w-full flex-col gap-6 md:w-[calc(50%-50px)] md:max-w-[480px] md:gap-10", card.offsetClass]}>
           <div>
             <img
               src={card.image}
@@ -62,13 +69,13 @@ const featureCards = [
             />
           </div>
 
-          <div class="flex flex-col gap-6">
+          <div class="flex flex-col gap-4 md:gap-6">
             <h3
-              class="font-inter-jp text-[30px] font-extrabold leading-[39px] tracking-[0.02em] text-[var(--text-heading-card)]"
+              class="font-inter-jp text-center text-[24px] font-extrabold leading-[1.4] tracking-[0.02em] text-[var(--text-heading-card)] md:text-left md:text-[30px] md:leading-[39px]"
             >
               <Fragment set:html={card.title} />
             </h3>
-            <p class="text-[16px] leading-[25.6px] text-[var(--text-secondary)]">
+            <p class="text-[14px] leading-[22.4px] text-[var(--text-secondary)] md:text-[16px] md:leading-[25.6px]">
               {card.description}
             </p>
           </div>
