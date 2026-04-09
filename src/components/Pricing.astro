@@ -3,11 +3,10 @@ const plans = [
   {
     name: "FREE",
     kicker: "14日間の無料トライアル",
-    headline: "気楽に始めたい人向け",
     price: "0",
     unit: "/月",
-    button: "無料で試す",
-    accent: "yellow",
+    button: "このプランで始める",
+    accent: "outline",
     features: [
       "FREEプランの全機能",
       "信用取引・レバレッジ管理",
@@ -17,12 +16,11 @@ const plans = [
   },
   {
     name: "PRO",
-    kicker: "いつでも解約OK",
-    headline: "まずはお試し",
+    kicker: "本格的なトレーダー向け",
     price: "1,080",
     unit: "/月",
-    button: "月額ではじめる",
-    accent: "dark",
+    button: "このプランで始める",
+    accent: "yellow",
     badge: "一番人気！",
     features: [
       "FREEプランの全機能",
@@ -33,12 +31,11 @@ const plans = [
   },
   {
     name: "LIFE TIME",
-    kicker: "約10ヶ月で元が取れる",
-    headline: "使い続けたい人向け",
+    kicker: "プロフェッショナル、法人向け",
     price: "9,800",
     unit: "",
-    button: "買い切りではじめる",
-    accent: "dark",
+    button: "このプランで始める",
+    accent: "outline",
     features: [
       "FREEプランの全機能",
       "信用取引・レバレッジ管理",
@@ -49,8 +46,8 @@ const plans = [
 ];
 ---
 
-<section id="pricing" class="relative overflow-hidden bg-white px-5 pb-[120px] pt-0 md:px-8">
-  <div class="absolute inset-x-0 top-0 h-[274px] bg-[var(--bg-product-surface)]"></div>
+<section id="pricing" class="relative overflow-hidden bg-white px-6 pb-[65px] pt-0 md:px-8 md:pb-[120px]">
+  <div class="absolute inset-x-0 top-0 h-[274px]"></div>
   <img
     src="/figma/pricing/bg.svg"
     alt=""
@@ -59,21 +56,24 @@ const plans = [
     loading="lazy"
   />
 
-  <div class="relative z-20 mx-auto flex max-w-[1040px] flex-col items-center gap-6 pt-[141px]">
+  <div class="relative z-20 mx-auto flex max-w-[1040px] flex-col items-center gap-[30px] pt-[65px] md:gap-6 md:pt-[141px]">
     <div class="flex flex-col items-center gap-3.5 text-center">
-      <p class="font-avenir text-[20px] font-bold leading-5 tracking-[2.4px] text-[var(--text-tertiary)]">
+      <p class="font-avenir text-[18px] font-bold leading-[18px] tracking-[2.16px] text-[var(--text-tertiary)] md:text-[20px] md:leading-5 md:tracking-[2.4px]">
         料金プラン
       </p>
-      <h2 class="font-inter-jp text-[clamp(34px,4.2vw,44px)] font-black leading-[63.8px] tracking-[1.76px] text-[var(--text-primary)]">
-        あなたに合った<br />プランを選べます
+      <h2 class="font-inter-jp text-[28px] font-black leading-[1.45] tracking-[1.12px] text-[var(--text-primary)] md:text-[clamp(34px,4.2vw,44px)] md:leading-[63.8px] md:tracking-[1.76px]">
+        必要な機能に応じて<br />アップグレード
       </h2>
     </div>
 
     <div class="grid w-full gap-6 md:grid-cols-3">
       {plans.map((plan) => (
-        <article class="relative flex min-h-[564px] flex-col rounded-[32px] border-2 border-[var(--border-strong)] bg-white px-8 pb-8 pt-8">
+        <article class:list={[
+          "relative flex flex-col rounded-[24px] border-2 border-[#5f667b] bg-white px-4 pb-4 pt-8 md:min-h-[564px] md:rounded-[32px] md:border-[var(--border-strong)] md:px-8 md:pb-8 md:pt-8",
+          plan.badge ? "min-h-[509px]" : "min-h-[476px]",
+        ]}>
           {plan.badge && (
-            <div class="absolute inset-x-[-2px] top-[-2px] flex h-12 items-center justify-center rounded-t-[30px] border-2 border-[var(--border-strong)] bg-[var(--accent-yellow)]">
+            <div class="absolute inset-x-[-2px] top-[-2px] flex h-12 items-center justify-center rounded-t-[22px] border-2 border-[var(--border-strong)] bg-[var(--accent-yellow)] md:rounded-t-[30px]">
               <span class="font-['Noto_Sans_JP'] text-[16px] font-bold leading-[32.38px] tracking-[0.8px] text-[var(--text-primary)]">
                 {plan.badge}
               </span>
@@ -85,9 +85,16 @@ const plans = [
               {plan.name}
             </div>
 
-            <div class="mt-7 flex items-end gap-1 text-[var(--text-primary)]">
+            <p class="font-avenir mt-2 text-[14px] font-semibold leading-[14px] tracking-[1.68px] text-[var(--text-secondary)] md:mt-8">
+              {plan.kicker}
+            </p>
+
+            <div class="mt-4 flex items-end gap-0.5 text-[var(--text-primary)] md:mt-7 md:gap-1">
               <span class="font-avenir pb-[2px] text-[24px] font-medium leading-6 tracking-[2.88px]">￥</span>
-              <span class="font-avenir text-[48px] font-bold leading-[48px] tracking-[5.76px]">
+              <span class:list={[
+                "font-avenir text-[48px] font-bold leading-[48px]",
+                plan.price === "0" ? "tracking-[5.76px]" : "tracking-[-0.02em] md:tracking-normal",
+              ]}>
                 {plan.price}
               </span>
               {plan.unit && (
@@ -97,27 +104,19 @@ const plans = [
               )}
             </div>
 
-            <p class="font-avenir mt-8 text-[14px] font-semibold leading-[14px] tracking-[1.68px] text-[var(--text-secondary)]">
-              {plan.kicker}
-            </p>
-
-            <h3 class="font-avenir mt-4 text-[24px] font-bold leading-6 tracking-[2.88px] text-[var(--text-primary)]">
-              {plan.headline}
-            </h3>
-
-            <ul class="mt-10 space-y-3">
+            <ul class="mt-8 space-y-3 md:mt-10">
               {plan.features.map((feature) => (
                 <li class="flex items-center gap-2">
                   <span class:list={[
                     "flex h-6 w-6 items-center justify-center rounded-full",
-                    plan.accent === "yellow" ? "bg-[var(--accent-yellow)]" : "bg-[var(--text-primary)]",
+                    plan.accent === "yellow" ? "bg-[var(--accent-yellow)]" : "bg-transparent",
                   ]}>
                     <span class:list={[
                       "block h-[12px] w-[16px] rotate-[-8deg] rounded-sm",
-                      plan.accent === "yellow" ? "bg-[var(--text-primary)]" : "bg-[var(--text-inverse)]",
+                      plan.accent === "yellow" ? "bg-[var(--text-primary)]" : "bg-[var(--text-primary)]",
                     ]}></span>
                   </span>
-                  <span class="font-avenir text-[16px] font-medium leading-4 tracking-[0.64px] text-[var(--text-primary)]">
+                  <span class="font-avenir text-[14px] font-medium leading-4 tracking-[0.04em] text-[var(--text-primary)] md:text-[16px] md:tracking-[0.64px]">
                     {feature}
                   </span>
                 </li>
@@ -142,8 +141,8 @@ const plans = [
       ))}
     </div>
 
-    <p class="font-['Noto_Sans_JP'] text-center text-[12px] font-normal leading-3 tracking-[0.48px] text-[var(--text-tertiary)]">
-      ※現在GMOコインユーザーのみ利用可能。順次拡張予定です。
+    <p class="w-full font-['Noto_Sans_JP'] text-left text-[12px] font-normal leading-[15.6px] tracking-[0.48px] text-[var(--text-tertiary)] md:text-center md:leading-3">
+      ※現在GMOコインユーザーのみ利用可能。<br class="md:hidden" />順次拡張予定です。
     </p>
   </div>
 </section>

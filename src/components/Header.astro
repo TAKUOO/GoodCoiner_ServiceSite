@@ -1,15 +1,33 @@
 ---
+interface Props {
+  /** ドキュメント系ページ向け：上余白を詰め、ヘッダーアニメを即時表示 */
+  docs?: boolean;
+}
+
+const { docs = false } = Astro.props;
+
 const navItems = [
-  { label: "特徴", href: "#features" },
-  { label: "料金", href: "#pricing" },
-  { label: "利用方法", href: "#howto", external: true },
+  { label: "特徴", href: "/#features" },
+  { label: "料金", href: "/#pricing" },
+  { label: "利用方法", href: "/usage" },
 ];
+const mobileNavItems = navItems.filter((item) => item.label !== "特徴");
 ---
 
 <>
-  <div class="h-[100px]" aria-hidden="true"></div>
-  <header class="fixed inset-x-0 top-5 z-50 px-4 md:px-8">
-    <nav class="header-shell mx-auto flex h-16 max-w-[1094px] items-center justify-between rounded-[var(--radius-pill)] bg-white/95 px-8 pr-4 shadow-[var(--shadow-float)]">
+  <div
+    class:list={[docs ? "h-[76px] md:h-[96px]" : "h-[74px] md:h-[100px]"]}
+    aria-hidden="true"
+  ></div>
+  <header
+    class:list={["fixed inset-x-0 z-50 px-4 md:px-8", docs ? "top-4 md:top-5" : "top-5"]}
+  >
+    <nav
+      class:list={[
+        "header-shell mx-auto flex h-[50px] items-center justify-between rounded-[var(--radius-pill)] bg-white/95 px-5 pr-2 shadow-[var(--shadow-float)] md:h-16 md:max-w-[1094px] md:px-8 md:pr-4",
+        docs && "header-shell--docs",
+      ]}
+    >
       <a
         href="/"
         class="flex items-center"
@@ -18,7 +36,7 @@ const navItems = [
         <img
           src="/assets/logo/header_logo.svg"
           alt="グッドコイナー"
-          class="h-auto w-[132px] md:w-[160px]"
+          class="h-auto w-[125px] md:w-[160px]"
         />
       </a>
 
@@ -26,25 +44,14 @@ const navItems = [
         {navItems.map((item) => (
           <a
             href={item.href}
-            class="flex items-center gap-1 px-5 text-[14px] font-bold tracking-[0.03em] text-[var(--text-primary)] transition hover:opacity-80"
+            class="px-5 text-[14px] font-bold tracking-[0.03em] text-[var(--text-primary)] transition hover:opacity-80"
           >
             {item.label}
-            {item.external && (
-              <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none">
-                <path
-                  d="M6.25 13.75L13.75 6.25M13.75 6.25H8.75M13.75 6.25V11.25"
-                  stroke="currentColor"
-                  stroke-width="1.6"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            )}
           </a>
         ))}
 
         <a
-          href="#download"
+          href="/#download"
           class="ml-4 inline-flex items-center gap-1 rounded-[120px] bg-[var(--accent-yellow)] px-4 py-2 text-[14px] font-bold leading-4 text-[var(--text-primary)] transition hover:bg-[var(--accent-yellow-hover)]"
         >
           ダウンロード
@@ -52,13 +59,16 @@ const navItems = [
         </a>
       </div>
 
-      <a
-        href="#download"
-        class="inline-flex items-center gap-1 rounded-[120px] bg-[var(--accent-yellow)] px-4 py-2 text-[13px] font-bold text-[var(--text-primary)] md:hidden"
-      >
-        ダウンロード
-        <img src="/assets/icons/download.svg" alt="" aria-hidden="true" class="h-4 w-4" />
-      </a>
+      <div class="flex items-center md:hidden">
+        {mobileNavItems.map((item) => (
+          <a
+            href={item.href}
+            class="px-2 text-[12px] font-bold tracking-[0.04em] text-[var(--text-primary)]"
+          >
+            {item.label}
+          </a>
+        ))}
+      </div>
     </nav>
   </header>
 </>
@@ -68,6 +78,10 @@ const navItems = [
     opacity: 0;
     transform: translateY(-22px);
     animation: header-shell-fade 0.52s cubic-bezier(0.22, 0.8, 0.2, 1) 2.12s both;
+  }
+
+  .header-shell--docs {
+    animation: header-shell-fade 0.4s cubic-bezier(0.22, 0.8, 0.2, 1) 0s both;
   }
 
   @keyframes header-shell-fade {
@@ -87,6 +101,10 @@ const navItems = [
       animation: none;
       opacity: 1;
       transform: none;
+    }
+
+    .header-shell--docs {
+      animation: none;
     }
   }
 </style>

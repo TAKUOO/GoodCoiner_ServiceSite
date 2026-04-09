@@ -1,46 +1,49 @@
-<section class="bg-[var(--bg-product-surface)] px-5 pb-[180px] pt-[120px] text-[var(--text-inverse)] md:px-8">
-  <div class="mx-auto max-w-[1094px] pt-[58px]">
-    <div class="relative rounded-[20px] border-[6px] border-white px-[54px] pb-[56px] pt-[86px]">
+<section class="bg-[var(--bg-product-surface)] px-6 pb-[73px] pt-[69px] text-[var(--text-inverse)] md:px-8 md:pb-[180px] md:pt-[120px]">
+  <div class="mx-auto max-w-[1094px] pt-0 md:pt-[58px]">
+    <div class="relative rounded-[20px] border-[3px] border-white px-8 pb-8 pt-12 md:border-[6px] md:px-[54px] md:pb-[56px] md:pt-[86px]">
       <div
-        class="absolute left-1/2 top-0 z-20 flex -translate-x-1/2 translate-y-[-72%] flex-col items-center gap-1 bg-[var(--bg-product-surface)] px-10 text-center"
+        class="relative left-auto top-auto z-20 flex translate-x-0 translate-y-0 flex-col items-center gap-1 bg-transparent px-0 text-center md:absolute md:left-1/2 md:top-0 md:-translate-x-1/2 md:translate-y-[-72%] md:bg-[var(--bg-product-surface)] md:px-10"
       >
         <p
-          class="font-avenir text-[20px] font-bold uppercase leading-[30px] tracking-[0.09em] text-[var(--text-tertiary)]"
+          class="font-avenir text-[18px] font-bold uppercase leading-[27px] tracking-[0.09em] text-[var(--text-tertiary)] md:text-[20px] md:leading-[30px]"
         >
           WHY WE BUILT IT
         </p>
         <h2
-          class="font-['Noto_Sans_JP'] text-[32px] font-black leading-[48px] tracking-[2.88px] text-[var(--text-inverse)]"
+          class="font-['Noto_Sans_JP'] text-[28px] font-black leading-[40.6px] tracking-[2.52px] text-[var(--text-inverse)] md:text-[32px] md:leading-[48px] md:tracking-[2.88px]"
         >
           開発者ストーリー
         </h2>
       </div>
 
-      <div class="grid items-start gap-[48px] md:grid-cols-[1fr_224px]">
+      <div class="mt-8 h-px w-full bg-white/70 md:hidden"></div>
+
+      <div class="mt-8 grid items-start gap-7 md:mt-0 md:gap-[48px] md:grid-cols-[1fr_224px]">
         <div>
-          <h3 class="font-['Noto_Sans_JP'] text-[24px] font-bold leading-[40.8px] text-[var(--text-inverse)]">
-            自分のトレードを、<br />「客観視できる」環境が欲しかったんです。
+          <h3 class="font-['Noto_Sans_JP'] text-[24px] font-black leading-[33.6px] text-[var(--text-inverse)] md:text-[24px] md:font-bold md:leading-[40.8px]">
+            <span class="hidden md:inline">自分のトレードを、<br /></span>
+            「客観視できる」環境が欲しかったんです。
           </h3>
 
-          <p class="mt-[30px] font-['Noto_Sans_JP'] text-[16px] leading-8 text-[var(--text-inverse)] font-light">
+          <p class="mt-7 font-['Noto_Sans_JP'] text-[14px] leading-7 text-[var(--text-inverse)] font-normal md:mt-[30px] md:text-[16px] md:leading-8 md:font-light">
             私自身、暗号資産トレードを続ける中で、「<strong>自分のトレードを客観的に振り返れない</strong>」ことに課題を感じてきました。履歴は見づらく、Excel管理は手間がかかる。<br />
             <strong>感情で損失を出しても原因を分析できない</strong>日々。その状況を変えるために開発したのが「グッドコイナー」です。<strong>規律を守り、データを味方にするためのツール</strong>として、<strong>同じ悩みを持つトレーダーに届けたい</strong>と考えています。
           </p>
         </div>
 
-        <div class="flex flex-col items-center gap-6">
-          <div class="flex flex-col items-center gap-5">
+        <div class="flex flex-col items-center gap-4 md:gap-6">
+          <div class="flex flex-col items-center gap-4 md:gap-5">
             <img
               src="/figma/story/avater_emu.png"
               alt="エム"
-              class="h-44 w-44 object-contain"
+              class="h-32 w-32 object-contain md:h-44 md:w-44"
               loading="lazy"
             />
             <div class="w-44 text-center">
-              <div class="font-avenir text-[24px] font-bold leading-6 tracking-[0.04em] text-[var(--text-inverse)]">
+              <div class="font-avenir text-[20px] font-bold leading-5 tracking-[0.08em] text-[var(--text-inverse)] md:text-[24px] md:leading-6 md:tracking-[0.04em]">
                 エム
               </div>
-              <div class="font-avenir mt-2 text-[16px] font-medium leading-4 tracking-[0.04em] text-[var(--text-tertiary)]">
+              <div class="font-avenir mt-2 text-[12px] font-medium leading-3 tracking-[0.04em] text-[var(--text-tertiary)] md:text-[16px] md:leading-4">
                 Founder & Developer
               </div>
             </div>
@@ -48,12 +51,12 @@
 
           <a
             href="#"
-            class="inline-flex items-center justify-center gap-3 rounded-[120px] bg-[var(--accent-yellow)] pl-6 pr-3 py-2"
+            class="inline-flex items-center justify-center gap-2 rounded-[120px] bg-[var(--accent-yellow)] py-2.5 pl-6 pr-4 md:gap-3 md:py-2 md:pl-6 md:pr-3"
           >
             <span class="inline-flex items-center gap-1">
-              <img src="/figma/story/x.svg" alt="" aria-hidden="true" class="h-6 w-6" loading="lazy" />
+              <img src="/figma/story/x.svg" alt="" aria-hidden="true" class="h-4 w-4 md:h-6 md:w-6" loading="lazy" />
               <span
-                class="font-['Noto_Sans_JP'] text-[16px] font-bold leading-4 text-[var(--text-primary)]"
+                class="font-['Noto_Sans_JP'] text-[14px] font-bold leading-4 text-[var(--text-primary)] md:text-[16px]"
               >
                 @emu_jpy
               </span>
