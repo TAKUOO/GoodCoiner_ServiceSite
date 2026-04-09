@@ -1,0 +1,618 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import FaqAccordion from "@/components/FaqAccordion.astro";
+
+const gmoLoginUrl = "https://coin.z.com/jp/member/login";
+const cmanIpCheckUrl = "https://www.cman.jp/network/support/go_access.cgi";
+
+const pageTitle = "利用方法 | GoodCoiner";
+const pageDescription =
+  "グッドコイナーをはじめるための手順をステップで案内します。GMOコインのAPI設定からアプリへの登録、セキュリティの注意まで。";
+
+const sidebarNav = [
+  { id: "usage-heading", label: "はじめに" },
+  { id: "step1", label: "GMOコインアカウント" },
+  { id: "step2", label: "APIキーの生成" },
+  { id: "step3", label: "IPアドレス登録" },
+  { id: "step4", label: "グッドコイナーに設定" },
+  { id: "security", label: "セキュリティ" },
+  { id: "usage-faq-heading", label: "よくある質問" },
+];
+
+const securityCards = [
+  {
+    title: "APIキーの管理",
+    items: [
+      "APIキーとAPIシークレットは、第三者に共有しないでください。",
+      "不要になったAPIキーは、GMOコイン側で削除してください。",
+      "漏えいの可能性がある場合は、APIキーを再発行してください。",
+      "必要最小限の権限だけを付与してください。",
+    ],
+  },
+  {
+    title: "アプリでの取り扱い",
+    items: [
+      "グッドコイナーでは、APIキーなどのデータを外部サーバーに送らず、お使いの端末内で扱います。",
+      "保存済みのAPIシークレットは画面に再表示しません（安全のため）。",
+    ],
+  },
+  {
+    title: "ネットワークとIP制限",
+    items: [
+      "IPアドレス制限を使う場合は、利用端末のグローバルIPを登録してください。",
+      "IPが変わる環境では接続できないことがあります。",
+      "登録したIPが正しいか、必要に応じて定期的に確認してください。",
+    ],
+  },
+  {
+    title: "GMOコインアカウント",
+    items: [
+      "GMOコイン側で二段階認証など、取引所のセキュリティ設定を有効にすることをおすすめします。",
+      "推測されにくいパスワードを使い、他サービスと使い回さないでください。",
+    ],
+  },
+];
+
+const usageFaqs = [
+  {
+    question: "APIキーは必要ですか？",
+    answer:
+      "はい。GMOコインの資産情報や取引履歴を取得するために必要です。",
+    open: true,
+  },
+  {
+    question: "注文の権限は必要ですか？",
+    answer:
+      "資産や履歴の確認だけなら参照系の権限で足ります。利確予約など注文機能を使う場合は、注文系の権限が別途必要です。",
+  },
+  {
+    question: "接続できないときは？",
+    answer:
+      "APIキー・APIシークレットの入力ミス、API権限、IPアドレス制限、GMOコインのメンテナンス、お手元のネットワークを確認してください。",
+  },
+  {
+    question: "保存したAPIシークレットをあとから見られますか？",
+    answer:
+      "いいえ。安全のため、グッドコイナーでは保存済みのシークレットは再表示しません。変更する場合は、新しいAPIキー／APIシークレットを再入力してください。",
+  },
+];
+---
+
+<BaseLayout title={pageTitle} description={pageDescription}>
+  <Header docs />
+  <main class="min-h-screen bg-white">
+    <div
+      class="mx-auto w-full max-w-[1094px] px-4 pb-16 pt-10 md:px-8 md:pb-20 md:pt-14"
+    >
+      <div class="flex flex-col gap-10 lg:flex-row lg:gap-0 lg:items-start">
+        <!-- 左：目次（shadcn ドキュメント風） -->
+        <aside
+          class="usage-sidebar hidden shrink-0 lg:sticky lg:top-24 lg:block lg:w-[220px] lg:pr-8 xl:w-[240px]"
+          aria-label="利用方法の目次"
+        >
+          <p class="mb-3 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+            目次
+          </p>
+          <nav class="flex flex-col gap-0.5" aria-label="このページの見出し">
+            {sidebarNav.map((item) => (
+              <a
+                href={`#${item.id}`}
+                class="usage-side-link usage-onpage-link rounded-md px-2 py-1.5 text-[13px] font-medium leading-snug text-zinc-600 transition-colors"
+                data-onpage-for={item.id}
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+        </aside>
+
+        <!-- 中央：本文 -->
+        <div class="min-w-0 flex-1 lg:pl-8">
+          <!-- モバイル用：横スクロール目次 -->
+          <nav
+            class="usage-mobile-toc -mx-1 mb-8 hidden gap-2 overflow-x-auto pb-2 md:flex lg:hidden"
+            aria-label="ページ内リンク"
+          >
+            {sidebarNav.map((item) => (
+              <a
+                href={`#${item.id}`}
+                class="usage-mobile-toc-link usage-onpage-link inline-flex shrink-0 items-center whitespace-nowrap rounded-md border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 shadow-sm transition-colors"
+                data-onpage-for={item.id}
+              >
+                {item.label}
+              </a>
+            ))}
+          </nav>
+
+          <article class="usage-shadcn max-w-none text-sm leading-7 text-zinc-600">
+            <p class="text-xs font-medium uppercase tracking-wide text-zinc-500">
+              はじめての方へ
+            </p>
+            <h1
+              id="usage-heading"
+              class="scroll-mt-28 font-avenir text-3xl font-bold tracking-tight text-zinc-950 md:text-4xl mt-3"
+            >
+              利用方法
+            </h1>
+            <p class="mt-3 max-w-prose text-sm leading-7 text-zinc-500 md:text-[15px] md:leading-8">
+              グッドコイナーを使い始めるにはAPI設定が必要です。GMOコインのAPIまわりの準備から、アプリへの設定、セキュリティの注意までを順に進めてください。
+            </p>
+
+            <!-- ステッパー（ブランド黄・角丸四角・数字 ＋ 縦線） -->
+            <div class="usage-stepper mt-12 md:mt-14">
+              <!-- Step 1 -->
+              <section class="usage-step scroll-mt-28" aria-labelledby="step1">
+                <div class="flex gap-4 md:gap-5">
+                  <div class="usage-step-rail flex w-9 shrink-0 flex-col items-center md:w-10" aria-hidden="true">
+                    <span class="usage-step-index">1</span>
+                    <span class="usage-step-line"></span>
+                  </div>
+                  <div class="usage-step-body min-w-0 flex-1 pb-10 md:pb-12">
+                    <h2 id="step1" class="usage-step-title">
+                      GMOコインアカウント作成
+                    </h2>
+                    <div class="usage-step-copy mt-5 space-y-4">
+                      <div class="usage-card rounded-xl border border-zinc-200/90 bg-white p-5 shadow-sm md:p-6">
+                        <ol class="list-decimal space-y-2 pl-5 text-sm leading-7 text-zinc-600">
+                          <li>
+                            GMOコイン公式サイト（
+                            <a
+                              href="https://coin.z.com/jp/"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              class="usage-inline-link"
+                            >coin.z.com（GMOコイン）</a>
+                            ）にアクセスします。
+                          </li>
+                          <li>アカウント登録を行います。</li>
+                          <li>本人確認を完了させます。</li>
+                          <li>
+                            GMOコインにログインできる状態にします。ログインは
+                            <a href={gmoLoginUrl} target="_blank" rel="noopener noreferrer" class="usage-inline-link">ログイン画面</a>から行えます。
+                          </li>
+                        </ol>
+                      </div>
+                      <div
+                        class="usage-alert usage-alert-info flex gap-3 rounded-lg border border-blue-200/80 bg-blue-50/60 px-4 py-3 text-sm text-zinc-700"
+                        role="note"
+                      >
+                        <svg class="mt-0.5 h-4 w-4 shrink-0 text-blue-600" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
+                          <path d="M12 16v-4M12 8h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                        </svg>
+                        <p>
+                          <span class="font-semibold text-zinc-900">ポイント</span>
+                          <span class="text-zinc-600">
+                            — 本人確認は重要な工程です。案内どおりに、正しい情報を入力してください。
+                          </span>
+                        </p>
+                      </div>
+                      <p class="text-sm text-zinc-500">
+                        すでに口座をお持ちの方は、このステップはスキップして構いません。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Step 2 -->
+              <section class="usage-step scroll-mt-28" aria-labelledby="step2">
+                <div class="flex gap-4 md:gap-5">
+                  <div class="usage-step-rail flex w-9 shrink-0 flex-col items-center md:w-10" aria-hidden="true">
+                    <span class="usage-step-index">2</span>
+                    <span class="usage-step-line"></span>
+                  </div>
+                  <div class="usage-step-body min-w-0 flex-1 pb-10 md:pb-12">
+                    <h2 id="step2" class="usage-step-title">
+                      APIキーの生成
+                    </h2>
+                    <div class="usage-step-copy mt-5 space-y-4">
+                      <div class="usage-card rounded-xl border border-zinc-200/90 bg-white p-5 shadow-sm md:p-6">
+                        <ol class="list-decimal space-y-3 pl-5 text-sm leading-7 text-zinc-600">
+                          <li>
+                            <a
+                              href={gmoLoginUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              class="usage-inline-link"
+                            >ログイン画面</a>
+                            からGMOコインにログインし、「暗号資産API」を開きます。
+                          </li>
+                          <li>APIキー一覧から、新しいAPIキーを作成します。</li>
+                          <li>表示されたAPIキーとAPIシークレットを、安全な場所に控えます。</li>
+                          <li>
+                            <span class="text-zinc-950">権限は、GMOコインのチェックボックスで選びます。</span>
+                            グッドコイナーで使う想定は、次の画面キャプチャと同じチェックにすると早いです。一覧にない権限は、使わない限りオフのままで構いません。
+                            <figure class="mt-4 overflow-hidden rounded-lg border border-zinc-200/90 bg-white shadow-sm">
+                              <img
+                                src="/usage/gmo-api-permissions.png"
+                                width={586}
+                                height={608}
+                                alt="GMOコインのAPI権限設定。資産では資産残高を取得・余力情報を取得のみオン。トレードでは注文・決済注文・注文キャンセル・注文の複数キャンセル・注文の一括キャンセル・一括決済注文・注文情報取得・有効注文一覧・最新の約定一覧・建玉一覧を取得・建玉サマリーを取得がオン、その他はオフの例。"
+                                class="w-full"
+                                loading="lazy"
+                                decoding="async"
+                              />
+                              <figcaption class="border-t border-zinc-100 px-3 py-2.5 text-[12px] leading-relaxed text-zinc-500 md:px-4">
+                                チェック例（公式の権限画面と同じ項目名です）。親の「資産」「トレード」にマスタがある場合は、これらの子項目を使うときは
+                                <span class="font-medium text-zinc-700">親もオンにする必要があることが多い</span>
+                                です。
+                              </figcaption>
+                            </figure>
+                          </li>
+                        </ol>
+                      </div>
+                      <div
+                        class="usage-alert usage-alert-warn flex gap-3 rounded-lg border border-amber-200/90 bg-amber-50/70 px-4 py-3 text-sm text-zinc-700"
+                        role="note"
+                      >
+                        <svg class="mt-0.5 h-4 w-4 shrink-0 text-amber-600" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M12 9v4M12 17h.01M4.3 4.3h15.4L12 20.7 4.3 4.3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path>
+                        </svg>
+                        <p>
+                          <span class="font-semibold text-zinc-900">重要</span>
+                          <span class="text-zinc-600">
+                            — 画面に出たAPIキーとAPIシークレットは、あとからまとめて見られない場合があります。すぐに確実に控えてください。APIシークレットは秘密情報です。チャットやスクリーンショットでの共有は避けてください。
+                          </span>
+                        </p>
+                      </div>
+                      <div
+                        class="usage-alert usage-alert-destructive flex gap-3 rounded-lg border border-red-200/90 bg-red-50/60 px-4 py-3 text-sm text-zinc-800"
+                        role="alert"
+                      >
+                        <svg class="mt-0.5 h-4 w-4 shrink-0 text-red-600" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
+                          <path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                        </svg>
+                        <p>
+                          <span class="font-semibold text-red-900">注意</span>
+                          <span class="text-zinc-700">
+                            — APIキーには、必要な機能だけに絞った最小限の権限だけを付与してください。使わない権限まで付けないのが安全です。
+                          </span>
+                        </p>
+                      </div>
+                      <p class="text-sm text-zinc-500">
+                        GMOコイン側の表示が更新された場合は、公式の権限一覧と突き合わせてください。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Step 3 -->
+              <section class="usage-step scroll-mt-28" aria-labelledby="step3">
+                <div class="flex gap-4 md:gap-5">
+                  <div class="usage-step-rail flex w-9 shrink-0 flex-col items-center md:w-10" aria-hidden="true">
+                    <span class="usage-step-index">3</span>
+                    <span class="usage-step-line"></span>
+                  </div>
+                  <div class="usage-step-body min-w-0 flex-1 pb-10 md:pb-12">
+                    <h2 id="step3" class="usage-step-title">
+                      IPアドレス登録
+                    </h2>
+                    <div class="usage-step-copy mt-5 space-y-4">
+                      <div class="usage-card rounded-xl border border-zinc-200/90 bg-white p-5 shadow-sm md:p-6">
+                        <ol class="list-decimal space-y-3 pl-5 text-sm leading-7 text-zinc-600">
+                          <li>GMOコインの「暗号資産API」で対象APIキーを開きます。</li>
+                          <li>
+                            IP制限（ホワイトリスト）の欄があれば、利用端末のグローバルIPアドレスを追加します。
+                          </li>
+                          <li>
+                            グローバルIPアドレスは<a
+                              href={cmanIpCheckUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              class="usage-inline-link">CMANの確認ページ</a>で確認できます。
+                          </li>
+                          <li>
+                            複数のPCから使う場合は、それぞれのIPを登録する必要があることがあります。
+                          </li>
+                          <li>内容を保存します。</li>
+                        </ol>
+                      </div>
+                      <div
+                        class="usage-alert usage-alert-destructive flex gap-3 rounded-lg border border-red-200/90 bg-red-50/60 px-4 py-3 text-sm text-zinc-800"
+                        role="alert"
+                      >
+                        <svg class="mt-0.5 h-4 w-4 shrink-0 text-red-600" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"></circle>
+                          <path d="M12 8v5M12 16h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                        </svg>
+                        <p>
+                          <span class="font-semibold text-red-900">注意</span>
+                          <span class="text-zinc-700">
+                            — IPアドレスが変わりやすい回線や、VPNの利用などでは、登録済みのIPと一致せず接続できないことがあります。
+                          </span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Step 4 -->
+              <section class="usage-step scroll-mt-28" aria-labelledby="step4">
+                <div class="flex gap-4 md:gap-5">
+                  <div class="usage-step-rail flex w-9 shrink-0 flex-col items-center md:w-10" aria-hidden="true">
+                    <span class="usage-step-index">4</span>
+                  </div>
+                  <div class="usage-step-body min-w-0 flex-1 pb-2">
+                    <h2 id="step4" class="usage-step-title">
+                      グッドコイナーに設定
+                    </h2>
+                    <div class="usage-step-copy mt-5 space-y-4">
+                      <div class="usage-card rounded-xl border border-zinc-200/90 bg-white p-5 shadow-sm md:p-6">
+                        <ol class="list-decimal space-y-2 pl-5 text-sm leading-7 text-zinc-600">
+                          <li>グッドコイナーを起動します。</li>
+                          <li>初回の設定画面、または「環境設定」を開きます。</li>
+                          <li>APIキーとAPIシークレットを入力します。</li>
+                          <li>保存ボタンを押します。</li>
+                          <li>
+                            保存時にGMOコインへの接続確認が行われます。成功すると、ダッシュボードなどの画面を利用できるようになります。
+                          </li>
+                        </ol>
+                      </div>
+                      <p class="text-sm text-zinc-500">
+                        接続に成功すると、資産や履歴の確認など、アプリの機能が使えるようになります。左の目次から該当箇所を見直すこともできます。
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </section>
+            </div>
+
+            <!-- Security（ステップ外のセクション） -->
+            <h2
+              id="security"
+              class="usage-section-title scroll-mt-28 mt-4 border-t border-zinc-200 pt-12 md:mt-6 md:pt-14"
+            >
+              セキュリティのベストプラクティス
+            </h2>
+            <div
+              class="usage-alert usage-alert-destructive mt-4 flex gap-3 rounded-lg border border-red-200/90 bg-red-50/50 px-4 py-3 text-sm"
+              role="note"
+            >
+              <svg class="mt-0.5 h-4 w-4 shrink-0 text-red-600" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2"></path>
+              </svg>
+              <p class="font-medium text-red-950">
+                APIキーまわりは、次のポイントだけでも意識すると安全度が上がります。
+              </p>
+            </div>
+            <div class="mt-8 space-y-8">
+              {securityCards.map((card) => (
+                <section>
+                  <h3 class="text-sm font-semibold text-zinc-950">{card.title}</h3>
+                  <ul class="mt-3 list-disc space-y-2 pl-4 text-sm leading-7 text-zinc-600">
+                    {card.items.map((line) => (
+                      <li>{line}</li>
+                    ))}
+                  </ul>
+                </section>
+              ))}
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ（TOPの Faq セクションと同一デザイン） -->
+    <section
+      class="relative overflow-hidden bg-[var(--bg-surface-muted)] px-4 pb-[96px] pt-0 md:px-8 md:pb-[120px]"
+      aria-labelledby="usage-faq-heading"
+    >
+      <img
+        src="/figma/faq/bg.svg"
+        alt=""
+        aria-hidden="true"
+        class="pointer-events-none absolute inset-x-0 top-0 z-0 h-auto w-full select-none"
+        loading="lazy"
+      />
+
+      <div class="relative z-10 mx-auto max-w-[866px] pt-[65px] md:pt-[140px]">
+        <div class="flex flex-col items-center gap-10 md:gap-10">
+          <div class="flex flex-col items-center gap-1 text-center md:gap-1">
+            <p
+              class="text-[18px] font-black leading-none tracking-[0.08em] text-[var(--text-tertiary)] md:text-[20px] md:leading-5 md:tracking-[0.12em]"
+            >
+              よくあるご質問
+            </p>
+            <h2
+              id="usage-faq-heading"
+              class="scroll-mt-28 font-avenir text-[44px] font-black leading-[1.45] tracking-[0.04em] text-[var(--text-primary)] md:text-[72px] md:leading-[108px]"
+            >
+              FAQ
+            </h2>
+          </div>
+
+          <FaqAccordion items={usageFaqs} />
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  /* [shadcn/ui](https://ui.shadcn.com/) 風のドキュメント用（Card / Alert / Muted のトーン） */
+  .usage-shadcn .usage-card {
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  }
+
+  /* 本文内の外部リンク（目次ナビ用のアンカーは対象外） */
+  .usage-shadcn a.usage-inline-link {
+    color: rgb(37 99 235);
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-color: rgb(147 197 253);
+    text-underline-offset: 0.2em;
+    transition: color 0.15s ease, text-decoration-color 0.15s ease;
+  }
+
+  .usage-shadcn a.usage-inline-link:hover {
+    color: rgb(29 78 216);
+    text-decoration-color: rgb(59 130 246);
+  }
+
+  /* ステッパー：黄＋黒のトンマナ（FAQ の Q バッジに近い）＋ ステップ間の縦線。バッジはフラット */
+  .usage-step > .flex {
+    align-items: stretch;
+  }
+
+  .usage-step-rail {
+    align-self: stretch;
+    flex-shrink: 0;
+    padding-top: 0;
+  }
+
+  .usage-step-line {
+    margin-top: 0.5rem;
+    width: 2px;
+    flex: 1 1 auto;
+    min-height: 1.5rem;
+    border-radius: 1px;
+    background-color: rgb(228 228 231);
+  }
+
+  .usage-step-index {
+    display: flex;
+    height: 2.25rem;
+    width: 2.25rem;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    border: none;
+    background-color: var(--accent-yellow);
+    font-family: var(--font-avenir);
+    font-size: 0.875rem;
+    font-weight: 800;
+    line-height: 1;
+    color: var(--text-primary);
+    user-select: none;
+    font-variant-numeric: tabular-nums;
+    font-synthesis: none;
+  }
+
+  @media (min-width: 768px) {
+    .usage-step-index {
+      height: 2.5rem;
+      width: 2.5rem;
+      font-size: 0.9375rem;
+      border-radius: 11px;
+    }
+  }
+
+  .usage-step-title {
+    margin: 0;
+    /* バッジ（固定高）と1行見出しの行ボックスの縦中央を揃える */
+    margin-top: calc((2.25rem - 1.2 * 1.375rem) / 2);
+    font-family: var(--font-avenir);
+    font-size: 1.375rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    color: rgb(9 9 11);
+  }
+
+  @media (min-width: 768px) {
+    .usage-step-title {
+      margin-top: calc((2.5rem - 1.2 * 1.625rem) / 2);
+      font-size: 1.625rem;
+    }
+  }
+
+  .usage-section-title {
+    font-family: var(--font-avenir);
+    font-size: 1.375rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+    color: rgb(9 9 11);
+  }
+
+  @media (min-width: 768px) {
+    .usage-section-title {
+      font-size: 1.625rem;
+    }
+  }
+
+  /* サイドナビ・このページ：ホバー／現在地はブランド黄ベース */
+  .usage-side-link:hover,
+  .usage-onpage-link:hover {
+    background-color: color-mix(in srgb, var(--accent-yellow) 24%, #fff);
+    color: var(--text-primary);
+  }
+
+  .usage-mobile-toc-link:hover {
+    background-color: color-mix(in srgb, var(--accent-yellow) 22%, #fff);
+    border-color: color-mix(in srgb, var(--accent-yellow) 45%, #e4e4e7);
+    color: var(--text-primary);
+  }
+
+  .usage-side-link.usage-onpage-link--active {
+    background-color: color-mix(in srgb, var(--accent-yellow) 18%, #fff);
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  .usage-mobile-toc-link.usage-onpage-link--active {
+    border-color: color-mix(in srgb, var(--accent-yellow) 45%, #e4e4e7);
+    background-color: color-mix(in srgb, var(--accent-yellow) 18%, #fff);
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .usage-mobile-toc {
+      scrollbar-width: thin;
+    }
+  }
+</style>
+
+<script is:inline>
+  function initUsageOnPage() {
+    const links = document.querySelectorAll("[data-onpage-for]");
+    if (!links.length) return;
+
+    const ids = [...links].map((l) => /** @type {HTMLElement} */ (l).dataset.onpageFor).filter(Boolean);
+    const headings = ids.map((id) => document.getElementById(id)).filter(Boolean);
+
+    if (!headings.length) return;
+
+    const setActive = (id) => {
+      links.forEach((link) => {
+        const on = link.dataset.onpageFor === id;
+        link.classList.toggle("usage-onpage-link--active", on);
+      });
+    };
+
+    const pickFromScroll = () => {
+      const offset = 120;
+      let current = ids[0];
+      for (const h of headings) {
+        if (h.getBoundingClientRect().top <= offset) current = h.id;
+      }
+      setActive(current);
+    };
+
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        pickFromScroll();
+        ticking = false;
+      });
+    };
+
+    pickFromScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+  }
+
+  initUsageOnPage();
+  document.addEventListener("astro:after-swap", initUsageOnPage);
+</script>
