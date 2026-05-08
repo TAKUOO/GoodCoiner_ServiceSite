@@ -1,0 +1,66 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+
+const lastUpdated = "2026年5月8日";
+
+const items = [
+  { label: "販売業者", value: "グッドコイナー" },
+  { label: "代表者名", value: "松井貴史" },
+  { label: "所在地", value: "〒814-0003 福岡県福岡市早良区城西1-7-5" },
+  { label: "電話番号", value: "メールにて受付致します。請求があれば遅滞なく開示します" },
+  { label: "メールアドレス", value: "support@goodcoiner.com" },
+  { label: "ウェブサイト", value: "https://goodcoiner.com" },
+  { label: "販売価格", value: "月額プラン：$6.99 / 月\n年額プラン：$70 / 年\n（表示価格は米ドル建てです。決済時の為替レートにより円換算額が変動します）" },
+  { label: "販売価格以外の費用", value: "インターネット接続料金・通信料金はお客様負担となります。" },
+  { label: "支払方法", value: "クレジットカード（Visa、Mastercard、American Express、JCB 等）" },
+  { label: "支払時期", value: "サブスクリプション開始時に初回請求が発生します。以降、月額プランは毎月同日、年額プランは毎年同日に自動更新されます。" },
+  { label: "サービス提供時期", value: "決済完了後、即時ご利用いただけます。" },
+  { label: "返品・キャンセルについて", value: "デジタルコンテンツの性質上、決済完了後の返金は原則お受けしておりません。ただし、当サービスに帰因する重大な不具合が発生した場合は個別にご対応いたします。\nサブスクリプションはいつでも解約可能です。解約後は次回更新日以降の請求は発生しませんが、残余期間の日割り返金はいたしません。" },
+  { label: "動作環境", value: "macOS 12 Ventura 以降（Apple Silicon・Intel 両対応）" },
+  { label: "その他特記事項", value: "本サービスはGMOコイン株式会社と提携・関係するものではなく、独立したサービスです。暗号資産の取引に伴うリスクはお客様自身でご負担ください。" },
+];
+---
+
+<BaseLayout
+  title="特定商取引法に基づく表記 | GoodCoiner"
+  description="GoodCoiner（グッドコイナー）の特定商取引法に基づく表記です。"
+>
+  <Header docs />
+  <main class="min-h-screen bg-[var(--bg-surface-muted)] px-6 pb-20 pt-10 md:pb-28 md:pt-14">
+    <div class="mx-auto max-w-[760px]">
+
+      <div class="mb-12">
+        <h1 class="font-['Noto_Sans_JP'] text-[32px] font-black leading-tight text-[var(--text-primary)] md:text-[40px]">
+          特定商取引法に基づく表記
+        </h1>
+        <p class="mt-3 font-['Noto_Sans_JP'] text-[13px] text-[var(--text-tertiary)]">
+          最終更新日：{lastUpdated}
+        </p>
+      </div>
+
+      <div class="overflow-hidden rounded-[16px] border border-[var(--border-soft)] bg-white">
+        {items.map((item, index) => (
+          <div class:list={[
+            "flex flex-col gap-2 px-6 py-5 md:flex-row md:gap-8",
+            index !== items.length - 1 && "border-b border-[var(--border-soft)]"
+          ]}>
+            <dt class="w-full shrink-0 font-['Noto_Sans_JP'] text-[13px] font-bold text-[var(--text-primary)] md:w-[200px]">
+              {item.label}
+            </dt>
+            <dd class="font-['Noto_Sans_JP'] text-[14px] leading-[1.8] text-[var(--text-secondary)] whitespace-pre-line">
+              {item.value}
+            </dd>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style is:global>
+  body { background: var(--bg-surface-muted); }
+</style>
