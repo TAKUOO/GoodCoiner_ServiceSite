@@ -1,53 +1,30 @@
 ---
-const plans = [
-  {
-    name: "FREE",
-    kicker: "14日間の無料トライアル",
-    price: "0",
-    unit: "/月",
-    button: "このプランで始める",
-    accent: "outline",
-    features: [
-      "FREEプランの全機能",
-      "信用取引・レバレッジ管理",
-      "カスタマーサポートの優先対応",
-      "アカウントのセキュリティ強化",
-    ],
-  },
-  {
-    name: "PRO",
-    kicker: "本格的なトレーダー向け",
-    price: "1,080",
-    unit: "/月",
-    button: "このプランで始める",
-    accent: "yellow",
-    badge: "一番人気！",
-    features: [
-      "FREEプランの全機能",
-      "信用取引・レバレッジ管理",
-      "カスタマーサポートの優先対応",
-      "アカウントのセキュリティ強化",
-    ],
-  },
-  {
-    name: "LIFE TIME",
-    kicker: "プロフェッショナル、法人向け",
-    price: "9,800",
-    unit: "",
-    button: "このプランで始める",
-    accent: "outline",
-    features: [
-      "FREEプランの全機能",
-      "信用取引・レバレッジ管理",
-      "カスタマーサポートの優先対応",
-      "アカウントのセキュリティ強化",
-    ],
-  },
+type Feature = { text: string; active: boolean };
+
+const freeFeatures: Feature[] = [
+  { text: "現物取引表示", active: true },
+  { text: "1銘柄のみ管理", active: true },
+  { text: "損益表示", active: true },
+  { text: "信用取引表示", active: false },
+  { text: "損益カレンダー", active: false },
+  { text: "自動利確予約", active: false },
+  { text: "運用シミュレーション", active: false },
+  { text: "アップデート", active: false },
+];
+
+const monthlyFeatures: Feature[] = [
+  { text: "現物取引表示", active: true },
+  { text: "複数銘柄管理", active: true },
+  { text: "損益表示", active: true },
+  { text: "信用取引表示", active: true },
+  { text: "損益カレンダー", active: true },
+  { text: "自動利確予約", active: true },
+  { text: "運用シミュレーション", active: true },
+  { text: "アップデート", active: true },
 ];
 ---
 
 <section id="pricing" class="relative overflow-hidden bg-white px-6 pb-[65px] pt-0 md:px-8 md:pb-[120px]">
-  <div class="absolute inset-x-0 top-0 h-[274px]"></div>
   <img
     src="/figma/pricing/bg.svg"
     alt=""
@@ -56,93 +33,179 @@ const plans = [
     loading="lazy"
   />
 
-  <div class="relative z-20 mx-auto flex max-w-[1040px] flex-col items-center gap-[30px] pt-[65px] md:gap-6 md:pt-[141px]">
+  <div class="relative z-20 mx-auto flex max-w-[1040px] flex-col items-center gap-14 pt-[65px] md:pt-[141px]">
+    <!-- heading -->
     <div class="flex flex-col items-center gap-3.5 text-center">
-      <p class="font-avenir text-[18px] font-bold leading-[18px] tracking-[2.16px] text-[var(--text-tertiary)] md:text-[20px] md:leading-5 md:tracking-[2.4px]">
+      <p class="font-avenir text-[18px] font-bold leading-none tracking-[2.16px] text-[var(--text-tertiary)] md:text-[20px] md:tracking-[2.4px]">
         料金プラン
       </p>
-      <h2 class="font-inter-jp text-[28px] font-black leading-[1.45] tracking-[1.12px] text-[var(--text-primary)] md:text-[clamp(34px,4.2vw,44px)] md:leading-[63.8px] md:tracking-[1.76px]">
-        必要な機能に応じて<br />アップグレード
+      <h2 class="font-inter-jp text-[28px] font-black leading-[1.45] tracking-[1.12px] text-[var(--text-primary)] md:text-[44px] md:tracking-[1.76px]">
+        あなたに合った<br />プランを選べます
       </h2>
     </div>
 
-    <div class="grid w-full gap-6 md:grid-cols-3">
-      {plans.map((plan) => (
-        <article class:list={[
-          "relative flex flex-col rounded-[24px] border-2 border-[#5f667b] bg-white px-4 pb-4 pt-8 md:min-h-[564px] md:rounded-[32px] md:border-[var(--border-strong)] md:px-8 md:pb-8 md:pt-8",
-          plan.badge ? "min-h-[509px]" : "min-h-[476px]",
-        ]}>
-          {plan.badge && (
-            <div class="absolute inset-x-[-2px] top-[-2px] flex h-12 items-center justify-center rounded-t-[22px] border-2 border-[var(--border-strong)] bg-[var(--accent-yellow)] md:rounded-t-[30px]">
-              <span class="font-['Noto_Sans_JP'] text-[16px] font-bold leading-[32.38px] tracking-[0.8px] text-[var(--text-primary)]">
-                {plan.badge}
-              </span>
-            </div>
-          )}
+    <!-- cards -->
+    <div class="flex w-full flex-col gap-6 md:flex-row md:items-stretch">
 
-          <div class:list={["flex flex-1 flex-col", plan.badge && "pt-12"]}>
-            <div class="font-avenir text-[24px] font-bold leading-6 tracking-[2.88px] text-[var(--text-primary)]">
-              {plan.name}
-            </div>
-
-            <p class="font-avenir mt-2 text-[14px] font-semibold leading-[14px] tracking-[1.68px] text-[var(--text-secondary)] md:mt-8">
-              {plan.kicker}
-            </p>
-
-            <div class="mt-4 flex items-end gap-0.5 text-[var(--text-primary)] md:mt-7 md:gap-1">
-              <span class="font-avenir pb-[2px] text-[24px] font-medium leading-6 tracking-[2.88px]">￥</span>
-              <span class:list={[
-                "font-avenir text-[48px] font-bold leading-[48px]",
-                plan.price === "0" ? "tracking-[5.76px]" : "tracking-[-0.02em] md:tracking-normal",
-              ]}>
-                {plan.price}
-              </span>
-              {plan.unit && (
-                <span class="font-avenir pb-[2px] text-[24px] font-medium leading-6 tracking-[2.88px]">
-                  {plan.unit}
-                </span>
-              )}
-            </div>
-
-            <ul class="mt-8 space-y-3 md:mt-10">
-              {plan.features.map((feature) => (
-                <li class="flex items-center gap-2">
-                  <span class:list={[
-                    "flex h-6 w-6 items-center justify-center rounded-full",
-                    plan.accent === "yellow" ? "bg-[var(--accent-yellow)]" : "bg-transparent",
-                  ]}>
-                    <span class:list={[
-                      "block h-[12px] w-[16px] rotate-[-8deg] rounded-sm",
-                      plan.accent === "yellow" ? "bg-[var(--text-primary)]" : "bg-[var(--text-primary)]",
-                    ]}></span>
-                  </span>
-                  <span class="font-avenir text-[14px] font-medium leading-4 tracking-[0.04em] text-[var(--text-primary)] md:text-[16px] md:tracking-[0.64px]">
-                    {feature}
-                  </span>
-                </li>
-              ))}
-            </ul>
-
-            <a
-              href="#download"
-              class:list={[
-                "mt-auto inline-flex min-h-[48px] w-full items-center justify-center rounded-[82px] px-10 py-2",
-                plan.accent === "yellow"
-                  ? "bg-[var(--accent-yellow)]"
-                  : "outline outline-2 outline-offset-[-2px] outline-[var(--border-strong)]",
-              ]}
-            >
-              <span class="font-['Noto_Sans_JP'] text-center text-[16px] font-bold leading-[32.38px] tracking-[0.16px] text-[var(--text-primary)]">
-                {plan.button}
-              </span>
-            </a>
+      <!-- 無料プラン -->
+      <article class="relative flex flex-1 flex-col rounded-[16px] border-2 border-[var(--border-strong)] bg-white px-10 py-12">
+        <div class="border-b border-[#e8e8e8] pb-5">
+          <div class="flex flex-col gap-4">
+            <p class="font-['Noto_Sans_JP'] text-[24px] font-bold leading-none tracking-[1.92px] text-[var(--text-primary)]">無料プラン</p>
+            <p class="font-['Noto_Sans_JP'] text-[14px] font-normal leading-[1.3] tracking-[0.56px] text-[var(--text-secondary)]">14日間の無料トライアル。まずは一度使ってみたい人向け。</p>
           </div>
-        </article>
-      ))}
+          <div class="mt-4 flex flex-col gap-1">
+            <div class="flex items-end">
+              <span class="font-avenir pb-2 text-[28px] font-bold leading-none tracking-[3.36px] text-[var(--text-primary)]">$</span>
+              <span class="font-avenir text-[48px] font-bold leading-none tracking-[-0.96px] text-[var(--text-primary)]">0</span>
+            </div>
+            <!-- 月額・年額の円換算テキストと高さを揃えるスペーサー -->
+            <p class="invisible font-['Noto_Sans_JP'] text-[10px] leading-[1.3]" aria-hidden="true">x</p>
+          </div>
+        </div>
+
+        <div class="mt-8 flex flex-1 flex-col justify-between gap-8">
+          <ul class="flex flex-col gap-3">
+            {freeFeatures.map((f) => (
+              <li class="flex items-center gap-2">
+                <svg class={`h-6 w-6 shrink-0 ${f.active ? "text-[#ffcd18]" : "text-[#e3e3e3]"}`} viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
+                <span class={`font-['Noto_Sans_JP'] text-[16px] leading-none tracking-[0.64px] ${f.active ? "text-[var(--text-primary)]" : "text-[#9e9e9e]"}`}>{f.text}</span>
+              </li>
+            ))}
+          </ul>
+          <a href="#download" class="flex min-h-[48px] w-full items-center justify-center rounded-[82px] border-2 border-[var(--border-strong)] px-10 py-2">
+            <span class="font-['Noto_Sans_JP'] text-[16px] font-bold leading-[32.38px] tracking-[0.16px] text-[var(--text-primary)]">このプランで始める</span>
+          </a>
+        </div>
+      </article>
+
+      <!-- 月額プラン（おすすめ） -->
+      <article class="relative flex flex-1 flex-col rounded-[16px] border-2 border-[var(--border-strong)] bg-white px-10 py-12">
+        <div class="absolute inset-x-0 top-0 flex -translate-y-1/2 justify-center">
+          <div class="flex items-center justify-center rounded-[82px] bg-[var(--accent-yellow)] px-6 py-1">
+            <span class="font-['Noto_Sans_JP'] text-[16px] font-bold leading-[32.38px] tracking-[0.16px] text-[var(--text-primary)]">おすすめ</span>
+          </div>
+        </div>
+
+        <div class="border-b border-[#e8e8e8] pb-5">
+          <div class="flex flex-col gap-4">
+            <p class="font-['Noto_Sans_JP'] text-[24px] font-bold leading-none tracking-[1.92px] text-[var(--text-primary)]">月額プラン</p>
+            <p class="font-['Noto_Sans_JP'] text-[14px] font-normal leading-[1.3] tracking-[0.56px] text-[var(--text-secondary)]">気軽に始めたい方に。最新機能が利用でき、いつでも解約可能。</p>
+          </div>
+          <div class="mt-4 flex flex-col gap-1">
+            <div class="flex items-end">
+              <span class="font-avenir pb-2 text-[28px] font-bold leading-none tracking-[3.36px] text-[var(--text-primary)]">$</span>
+              <span class="font-avenir text-[48px] font-bold leading-none tracking-[-0.96px] text-[var(--text-primary)]">6.99</span>
+              <span class="font-['Noto_Sans_JP'] pb-2 pl-1 text-[24px] font-medium leading-none tracking-[2.88px] text-[var(--text-primary)]">/月</span>
+            </div>
+            <p class="font-['Noto_Sans_JP'] text-[10px] font-normal leading-[1.3] tracking-[0.5px] text-[var(--text-secondary)]">1$ = 150円換算で 約1,050円 / 月</p>
+          </div>
+        </div>
+
+        <div class="mt-8 flex flex-1 flex-col justify-between gap-8">
+          <ul class="flex flex-col gap-3">
+            {monthlyFeatures.map((f) => (
+              <li class="flex items-center gap-2">
+                <svg class="h-6 w-6 shrink-0 text-[#ffcd18]" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+                </svg>
+                <span class="font-['Noto_Sans_JP'] text-[16px] leading-none tracking-[0.64px] text-[var(--text-primary)]">{f.text}</span>
+              </li>
+            ))}
+          </ul>
+          <button
+            data-checkout-plan="monthly"
+            class="flex min-h-[48px] w-full cursor-pointer items-center justify-center rounded-[82px] bg-[var(--accent-yellow)] px-10 py-2 disabled:opacity-60"
+          >
+            <span class="font-['Noto_Sans_JP'] text-[16px] font-bold leading-[32.38px] tracking-[0.16px] text-[var(--text-primary)]">このプランで始める</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- 年額プラン（一番お得） -->
+      <article class="relative flex flex-1 flex-col rounded-[16px] border-2 border-[var(--border-strong)] bg-white px-10 py-12">
+        <div class="absolute inset-x-0 top-0 flex -translate-y-1/2 justify-center">
+          <div class="flex items-center justify-center rounded-[82px] bg-[var(--border-strong)] px-6 py-1">
+            <span class="font-['Noto_Sans_JP'] text-[16px] font-bold leading-[32.38px] tracking-[0.16px] text-white">一番お得</span>
+          </div>
+        </div>
+
+        <div class="border-b border-[#e8e8e8] pb-5">
+          <div class="flex flex-col gap-4">
+            <p class="font-['Noto_Sans_JP'] text-[24px] font-bold leading-none tracking-[1.92px] text-[var(--text-primary)]">年額プラン</p>
+            <p class="font-['Noto_Sans_JP'] text-[14px] font-normal leading-[1.3] tracking-[0.56px] text-[var(--text-secondary)]">長期で使いたい方に。コストを抑えて本格的に利用可能。</p>
+          </div>
+          <div class="mt-4 flex flex-col gap-1">
+            <div class="flex items-end">
+              <span class="font-avenir pb-2 text-[28px] font-bold leading-none tracking-[3.36px] text-[var(--text-primary)]">$</span>
+              <span class="font-avenir text-[48px] font-bold leading-none tracking-[-0.96px] text-[var(--text-primary)]">70</span>
+              <span class="font-['Noto_Sans_JP'] pb-2 pl-1 text-[24px] font-medium leading-none tracking-[2.88px] text-[var(--text-primary)]">/年</span>
+            </div>
+            <p class="font-['Noto_Sans_JP'] text-[10px] font-normal leading-[1.3] tracking-[0.5px] text-[var(--text-secondary)]">1$ = 150円換算で 約10,500円 / 年</p>
+          </div>
+        </div>
+
+        <div class="mt-8 flex flex-1 flex-col justify-between gap-8">
+          <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-2 rounded-[8px] bg-[#fcfcfc] p-4">
+              <svg class="h-6 w-6 shrink-0 text-[#ffcd18]" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+              </svg>
+              <span class="font-['Noto_Sans_JP'] text-[14px] leading-[1.3] tracking-[0.56px] text-[var(--text-primary)]">月額プランの全機能が含まれます</span>
+            </div>
+            <div class="rounded-[8px] bg-[rgba(255,205,24,0.1)] p-2 text-center">
+              <p class="font-['Noto_Sans_JP'] text-[16px] font-medium leading-[1.7] tracking-[0.64px] text-[var(--text-primary)]">🎉 実質2ヶ月分お得</p>
+              <p class="font-['Noto_Sans_JP'] text-[12px] font-medium leading-[1.7] tracking-[0.64px] text-[var(--text-primary)]">（年間 - $13.88）</p>
+            </div>
+          </div>
+          <button
+            data-checkout-plan="yearly"
+            class="flex min-h-[48px] w-full cursor-pointer items-center justify-center rounded-[82px] border-2 border-[var(--border-strong)] px-10 py-2 disabled:opacity-60"
+          >
+            <span class="font-['Noto_Sans_JP'] text-[16px] font-bold leading-[32.38px] tracking-[0.16px] text-[var(--text-primary)]">このプランで始める</span>
+          </button>
+        </div>
+      </article>
+
     </div>
 
-    <p class="w-full font-['Noto_Sans_JP'] text-left text-[12px] font-normal leading-[15.6px] tracking-[0.48px] text-[var(--text-tertiary)] md:text-center md:leading-3">
+    <p class="w-full font-['Noto_Sans_JP'] text-left text-[12px] font-normal leading-none tracking-[0.48px] text-[var(--text-tertiary)]">
       ※現在GMOコインユーザーのみ利用可能。<br class="md:hidden" />順次拡張予定です。
     </p>
   </div>
 </section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>("[data-checkout-plan]").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const plan = btn.dataset.checkoutPlan;
+      if (!plan) return;
+
+      btn.disabled = true;
+      const originalText = btn.querySelector("span")?.textContent ?? "";
+      if (btn.querySelector("span")) btn.querySelector("span")!.textContent = "処理中...";
+
+      try {
+        const res = await fetch("/api/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ plan }),
+        });
+        const data = await res.json();
+        if (data.url) {
+          window.location.href = data.url;
+        } else {
+          alert("決済ページの準備中にエラーが発生しました。しばらくしてから再試行してください。");
+          btn.disabled = false;
+          if (btn.querySelector("span")) btn.querySelector("span")!.textContent = originalText;
+        }
+      } catch {
+        alert("通信エラーが発生しました。しばらくしてから再試行してください。");
+        btn.disabled = false;
+        if (btn.querySelector("span")) btn.querySelector("span")!.textContent = originalText;
+      }
+    });
+  });
+</script>

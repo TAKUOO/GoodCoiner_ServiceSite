@@ -2,9 +2,21 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "goodcoiner-service-site",
   "compatibility_date": "2026-04-02",
+  "compatibility_flags": ["nodejs_compat"],
   "assets": {
     "directory": "./dist",
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "404-page"
-  }
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "goodcoiner-subscriptions",
+      "database_id": "f492eecc-5a18-4155-a85f-59004fc39098"
+    }
+  ]
+  // 環境変数は .dev.vars (ローカル) または Cloudflare ダッシュボード (本番/staging) で設定
+  // STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET,
+  // STRIPE_MONTHLY_PRICE_ID, STRIPE_YEARLY_PRICE_ID,
+  // STRIPE_SUCCESS_URL, STRIPE_CANCEL_URL, PUBLIC_SITE_URL
 }
