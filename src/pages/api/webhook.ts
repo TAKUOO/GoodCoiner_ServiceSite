@@ -51,12 +51,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
           .prepare(
             `INSERT INTO subscriptions
                (id, license_key, stripe_customer_id, stripe_subscription_id,
-                email, status, current_period_end, created_at, updated_at)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                status, current_period_end, created_at, updated_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
              ON CONFLICT(license_key) DO UPDATE SET
                stripe_customer_id     = excluded.stripe_customer_id,
                stripe_subscription_id = excluded.stripe_subscription_id,
-               email                  = excluded.email,
                status                 = excluded.status,
                current_period_end     = excluded.current_period_end,
                updated_at             = excluded.updated_at`
@@ -66,7 +65,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
             licenseKey,
             session.customer as string,
             subscriptionId,
-            session.customer_details?.email ?? null,
             plan,
             periodEnd,
             now,

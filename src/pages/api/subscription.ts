@@ -4,7 +4,6 @@ export const prerender = false;
 
 type SubscriptionRow = {
   license_key: string;
-  email: string | null;
   status: string;
   current_period_end: number | null;
   early_access_expires_at: number | null;
@@ -12,7 +11,6 @@ type SubscriptionRow = {
 
 type ResolvedStatus = {
   status: string;
-  email?: string;
   currentPeriodEnd?: string;
   earlyAccessExpiresAt?: string;
 };
@@ -22,7 +20,7 @@ function resolveStatus(row: SubscriptionRow): ResolvedStatus {
 
   switch (row.status) {
     case "owner":
-      return { status: "owner", email: row.email ?? undefined };
+      return { status: "owner" };
 
     case "early_access": {
       const valid =
@@ -31,12 +29,11 @@ function resolveStatus(row: SubscriptionRow): ResolvedStatus {
       return valid
         ? {
             status: "early_access",
-            email: row.email ?? undefined,
             earlyAccessExpiresAt: new Date(
               row.early_access_expires_at! * 1000
             ).toISOString(),
           }
-        : { status: "expired", email: row.email ?? undefined };
+        : { status: "expired" };
     }
 
     case "monthly":
@@ -46,16 +43,15 @@ function resolveStatus(row: SubscriptionRow): ResolvedStatus {
       return valid
         ? {
             status: row.status,
-            email: row.email ?? undefined,
             currentPeriodEnd: new Date(
               row.current_period_end! * 1000
             ).toISOString(),
           }
-        : { status: "expired", email: row.email ?? undefined };
+        : { status: "expired" };
     }
 
     default:
-      return { status: row.status, email: row.email ?? undefined };
+      return { status: row.status };
   }
 }
 
@@ -68,7 +64,6 @@ function corsHeaders(origin: string) {
   };
 }
 
-// Electron からの preflight に対応
 export const OPTIONS: APIRoute = ({ locals }) => {
   const origin = locals.runtime.env.ALLOWED_ORIGIN ?? "*";
   return new Response(null, { status: 204, headers: corsHeaders(origin) });
@@ -98,7 +93,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
   const row = await env.DB
     .prepare(
-      `SELECT license_key, email, status, current_period_end, early_access_expires_at
+      `SELECT license_key, status, current_period_end, early_access_expires_at
        FROM subscriptions
        WHERE license_key = ?`
     )

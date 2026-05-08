@@ -1,0 +1,181 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+
+const lastUpdated = "2026年5月8日";
+---
+
+<BaseLayout
+  title="プライバシーポリシー | GoodCoiner"
+  description="GoodCoiner（グッドコイナー）のプライバシーポリシーです。"
+>
+  <Header docs />
+  <main class="min-h-screen bg-[var(--bg-surface-muted)] px-6 pb-20 pt-10 md:pb-28 md:pt-14">
+    <div class="mx-auto max-w-[760px]">
+
+      <div class="mb-12">
+        <h1 class="font-['Noto_Sans_JP'] text-[32px] font-black leading-tight text-[var(--text-primary)] md:text-[40px]">
+          プライバシーポリシー
+        </h1>
+        <p class="mt-3 font-['Noto_Sans_JP'] text-[13px] text-[var(--text-tertiary)]">
+          最終更新日：{lastUpdated}
+        </p>
+      </div>
+
+      <div class="prose-legal">
+        <p>
+          GoodCoiner（以下「当サービス」）は、個人情報の保護に関する法律（個人情報保護法）およびその他関連法令を遵守し、ユーザーの個人情報を以下のプライバシーポリシー（以下「本ポリシー」）に従って適切に取り扱います。
+        </p>
+
+        <h2>第1条（収集する情報）</h2>
+        <p>当サービスは、以下の情報を収集することがあります。</p>
+        <ul>
+          <li><strong>決済・顧客情報</strong>：メールアドレス・クレジットカード情報等の決済情報はすべてStripe社が管理します。当サービスのサーバーはこれらを保持しません。</li>
+          <li><strong>ライセンス管理情報</strong>：ライセンスキー（UUID）、サブスクリプションのステータス・有効期限、StripeのカスタマーID・サブスクリプションID（識別子）をサーバー上のデータベースに保存します。これらは個人を直接特定する情報ではありません。</li>
+          <li><strong>アクティベーション情報</strong>：アプリのアクティベーションに使用する一時トークンを保存します（30分間有効、使用後削除）。</li>
+        </ul>
+        <p>
+          なお、本アプリ（デスクトップアプリケーション）がGMOコインAPIを通じて取得するトレードデータ・資産情報・APIキー等は、ユーザーのデバイス上にのみ保存され、当サービスのサーバーには送信・収集されません。
+        </p>
+
+        <h2>第2条（情報の利用目的）</h2>
+        <p>収集した情報は、以下の目的のために利用します。</p>
+        <ul>
+          <li>サブスクリプションの管理および有効性の確認</li>
+          <li>ライセンスキーの発行・管理</li>
+          <li>お問い合わせへの対応</li>
+          <li>本サービスの改善および新機能の開発</li>
+          <li>利用規約に違反した行為への対応</li>
+          <li>法令に基づく対応</li>
+        </ul>
+
+        <h2>第3条（保存期間）</h2>
+        <p>
+          当サービスが保存するライセンス管理情報は、サブスクリプション終了後3年間保持した後、削除します。削除のご要望は<a href="/#contact">お問い合わせフォーム</a>よりご連絡ください。
+        </p>
+
+        <h2>第4条（第三者への提供）</h2>
+        <p>
+          当サービスは、以下の場合を除き、ユーザーの個人情報を第三者に提供することはありません。
+        </p>
+        <ul>
+          <li>ユーザーの同意がある場合</li>
+          <li>法令に基づく場合</li>
+          <li>人の生命・身体・財産の保護のために必要で、ユーザーの同意を得ることが困難な場合</li>
+        </ul>
+
+        <h2>第5条（外部サービスの利用・海外移転）</h2>
+        <p>
+          当サービスは以下の外部サービスを利用しており、これらのサービスへの情報提供に伴い、個人情報が日本国外（主に米国）のサーバーに移転・保存される場合があります。
+        </p>
+
+        <h3>Stripe（決済）</h3>
+        <p>
+          決済処理にStripe Inc.（米国）のサービスを利用しています。クレジットカード情報はStripe社のサーバーで処理・管理されます。また、Stripe.jsによりお支払い関連のCookieが使用される場合があります。Stripeのプライバシーポリシーについては、Stripe社のウェブサイトをご確認ください。
+        </p>
+
+        <h3>Cloudflare（インフラ）</h3>
+        <p>
+          本サービスのAPIおよびデータベースはCloudflare, Inc.（米国）のインフラ上で運用されています。Cloudflareのプライバシーポリシーについては、Cloudflare社のウェブサイトをご確認ください。
+        </p>
+
+        <h2>第6条（Cookieおよびトラッキング）</h2>
+        <p>
+          当サービスのウェブサイト自体はユーザーの行動を追跡する目的のCookieや解析ツールを使用していません。ただし、決済処理に使用するStripe.jsにより、お支払い手続きに必要なCookieが設定される場合があります。将来的に独自の解析ツールを導入する場合は、本ポリシーを更新のうえご案内します。
+        </p>
+
+        <h2>第7条（情報の管理・保護）</h2>
+        <p>
+          当サービスは、収集した個人情報について、不正アクセス・紛失・破損・改ざん・漏洩などを防止するため、適切なセキュリティ対策を講じます。ただし、インターネット上の送信方法および電子的な保存方法は完全に安全であることを保証できません。
+        </p>
+
+        <h2>第8条（個人情報の開示・訂正・削除）</h2>
+        <p>
+          ユーザーは、当サービスが保有するご自身の個人情報について、開示・訂正・削除を求めることができます。ご要望は<a href="/#contact">お問い合わせフォーム</a>よりご連絡ください。合理的な期間内に対応いたします。
+        </p>
+
+        <h2>第9条（未成年者のプライバシー）</h2>
+        <p>
+          本サービスは13歳未満の方を対象としていません。13歳未満の方から意図せず個人情報を収集した場合、速やかに削除します。
+        </p>
+
+        <h2>第10条（本ポリシーの変更）</h2>
+        <p>
+          当サービスは、必要に応じて本ポリシーを変更することがあります。変更後のポリシーは本ページに掲載した時点より効力を生じます。重要な変更がある場合はサービス上でお知らせします。
+        </p>
+
+        <h2>第11条（お問い合わせ）</h2>
+        <p>
+          本ポリシーに関するお問い合わせは、<a href="/#contact">お問い合わせフォーム</a>よりご連絡ください。
+        </p>
+      </div>
+
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style is:global>
+  body { background: var(--bg-surface-muted); }
+</style>
+
+<style>
+  .prose-legal {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 15px;
+    line-height: 1.9;
+    color: var(--text-secondary);
+  }
+
+  .prose-legal p {
+    margin-bottom: 1.5rem;
+  }
+
+  .prose-legal h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-top: 2.5rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .prose-legal h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .prose-legal ul,
+  .prose-legal ol {
+    padding-left: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .prose-legal li {
+    margin-bottom: 0.4rem;
+  }
+
+  .prose-legal ul {
+    list-style-type: disc;
+  }
+
+  .prose-legal ol {
+    list-style-type: decimal;
+  }
+
+  .prose-legal a {
+    color: var(--text-primary);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .prose-legal strong {
+    color: var(--text-primary);
+    font-weight: 700;
+  }
+</style>
