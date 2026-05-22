@@ -9,6 +9,8 @@ STRIPE_SUCCESS_URL=http://localhost:4321/success
 STRIPE_CANCEL_URL=http://localhost:4321/#pricing
 
 # サイト URL
+PUBLIC_APP_ENV=local
+PUBLIC_SERVICE_SITE_URL=http://localhost:4321
 PUBLIC_SITE_URL=http://localhost:4321
 
 # CORS: デスクトップアプリの origin (Electron の場合は app:// または localhost:port)

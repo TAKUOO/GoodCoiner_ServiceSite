@@ -74,6 +74,45 @@ export const POST: APIRoute = async ({ request, locals }) => {
         break;
       }
 
+      case "customer.subscription.created": {
+        const sub = event.data.object as Stripe.Subscription;
+        const licenseKey = sub.metadata?.licenseKey;
+        const plan = sub.metadata?.plan as "monthly" | "yearly" | undefined;
+
+        if (!licenseKey || !plan) {
+          console.error("Missing licenseKey or plan in subscription metadata", sub.id);
+          break;
+        }
+
+        const periodEnd = sub.items.data[0]?.current_period_end ?? null;
+
+        await db
+          .prepare(
+            `INSERT INTO subscriptions
+               (id, license_key, stripe_customer_id, stripe_subscription_id,
+                status, current_period_end, created_at, updated_at)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+             ON CONFLICT(license_key) DO UPDATE SET
+               stripe_customer_id     = excluded.stripe_customer_id,
+               stripe_subscription_id = excluded.stripe_subscription_id,
+               status                 = excluded.status,
+               current_period_end     = excluded.current_period_end,
+               updated_at             = excluded.updated_at`
+          )
+          .bind(
+            crypto.randomUUID(),
+            licenseKey,
+            sub.customer as string,
+            sub.id,
+            plan,
+            periodEnd,
+            now,
+            now
+          )
+          .run();
+        break;
+      }
+
       case "customer.subscription.updated": {
         const sub = event.data.object as Stripe.Subscription;
         if (sub.status === "active") {
