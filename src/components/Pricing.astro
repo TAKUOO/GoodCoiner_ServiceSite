@@ -192,7 +192,7 @@ const monthlyFeatures: Feature[] = [
       if (btn.querySelector("span")) btn.querySelector("span")!.textContent = "処理中...";
 
       try {
-        const res = await fetch("/api/checkout", {
+        const res = await fetch("/api/billing/checkout", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ plan }),

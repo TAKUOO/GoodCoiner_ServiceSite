@@ -6,8 +6,10 @@ interface Env {
   STRIPE_WEBHOOK_SECRET: string;
   STRIPE_MONTHLY_PRICE_ID: string;
   STRIPE_YEARLY_PRICE_ID: string;
-  STRIPE_SUCCESS_URL: string;
-  STRIPE_CANCEL_URL: string;
+  STRIPE_SUCCESS_URL?: string;
+  STRIPE_CANCEL_URL?: string;
+  PUBLIC_APP_ENV?: "local" | "staging" | "production";
+  PUBLIC_SERVICE_SITE_URL?: string;
   PUBLIC_SITE_URL: string;
   ALLOWED_ORIGIN: string;
 }
