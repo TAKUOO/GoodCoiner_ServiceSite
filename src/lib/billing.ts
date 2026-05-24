@@ -46,18 +46,19 @@ export async function createCheckoutSession(
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
+      client_reference_id: licenseKey,
       line_items: [{ price: priceId, quantity: 1 }],
       success_url: buildSuccessUrl(env),
       cancel_url: buildCancelUrl(env),
-      metadata: { licenseKey, plan },
+      metadata: { licenseKey, entitlementKey: licenseKey, plan },
       subscription_data: {
-        metadata: { licenseKey, plan },
+        metadata: { licenseKey, entitlementKey: licenseKey, plan },
       },
     });
 
     return json({ url: session.url }, 200);
-  } catch (err) {
-    console.error("Stripe checkout error:", err);
+  } catch {
+    console.error("Stripe checkout error");
     return json({ error: "Failed to create checkout session" }, 500);
   }
 }
