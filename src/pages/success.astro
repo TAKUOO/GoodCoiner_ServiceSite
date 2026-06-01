@@ -7,7 +7,6 @@ import Stripe from "stripe";
 
 const sessionId = Astro.url.searchParams.get("session_id");
 const appDownloadUrl = getAppDownloadUrl(Astro.locals.runtime.env);
-let activationToken: string | null = null;
 let licenseKey: string | null = null;
 let planBadge = "月額";
 let errorMsg: string | null = null;
@@ -29,25 +28,11 @@ if (!sessionId) {
 
     if (!licenseKey) {
       errorMsg = "ライセンス情報の取得に失敗しました。";
-    } else {
-      activationToken = crypto.randomUUID();
-      const now = Math.floor(Date.now() / 1000);
-      const expiresAt = now + 30 * 60;
-
-      await Astro.locals.runtime.env.DB
-        .prepare(
-          `INSERT OR REPLACE INTO activation_tokens (token, license_key, expires_at, created_at)
-           VALUES (?, ?, ?, ?)`
-        )
-        .bind(activationToken, licenseKey, expiresAt, now)
-        .run();
     }
   } catch {
     errorMsg = "セッション情報の取得に失敗しました。";
   }
 }
-
-const deepLink = activationToken ? `goodcoiner://activate?token=${activationToken}` : null;
 ---
 
 <BaseLayout title="お支払い完了 | GoodCoiner">
@@ -125,17 +110,19 @@ const deepLink = activationToken ? `goodcoiner://activate?token=${activationToke
               <p class="mt-3 font-['Noto_Sans_JP'] text-[12px] leading-[1.8] text-white/60">
                 ボタンを押すとアプリが起動し、購入したプランが反映されます。
               </p>
-              {deepLink && (
-                <a
-                  id="open-app-btn"
-                  href={deepLink}
-                  class="mt-5 inline-flex min-h-[52px] w-full items-center justify-center rounded-[82px] bg-[var(--accent-yellow)] px-8 py-2 text-center transition-opacity hover:opacity-90"
-                >
-                  <span class="font-['Noto_Sans_JP'] text-[16px] font-bold text-[var(--text-primary)]">
-                    アプリで利用を開始する
-                  </span>
-                </a>
-              )}
+              <button
+                id="open-app-btn"
+                type="button"
+                data-session-id={sessionId}
+                class="mt-5 inline-flex min-h-[52px] w-full items-center justify-center rounded-[82px] bg-[var(--accent-yellow)] px-8 py-2 text-center transition-opacity hover:opacity-90 disabled:opacity-60"
+              >
+                <span class="font-['Noto_Sans_JP'] text-[16px] font-bold text-[var(--text-primary)]">
+                  アプリで利用を開始する
+                </span>
+              </button>
+              <p id="activation-error" class="mt-3 hidden font-['Noto_Sans_JP'] text-[11px] leading-[1.7] text-red-300">
+                連携コードの発行に失敗しました。少し時間を置いて再度お試しください。
+              </p>
             </section>
           </div>
 
@@ -146,10 +133,21 @@ const deepLink = activationToken ? `goodcoiner://activate?token=${activationToke
             <div class="mt-4 grid gap-3 md:grid-cols-[1fr_1fr]">
               <div class="rounded-[12px] bg-[#fafafa] p-4">
                 <p class="mb-2 font-['Noto_Sans_JP'] text-[11px] leading-[1.7] text-[var(--text-tertiary)]">
-                  アプリをインストール後、設定画面の決済連携欄にこのコードを入力してください。
+                  アプリをインストール後、手動連携コードを表示して、設定画面の決済連携欄に入力してください。コードは短時間で期限切れになります。
                 </p>
-                <p class="font-avenir select-all break-all text-[13px] font-bold tracking-wider text-[var(--text-primary)]">
-                  {activationToken}
+                <button
+                  id="show-code-btn"
+                  type="button"
+                  data-session-id={sessionId}
+                  class="mt-2 inline-flex min-h-[40px] items-center justify-center rounded-[82px] border border-[var(--border-strong)] px-5 py-2 text-center transition hover:bg-white disabled:opacity-60"
+                >
+                  <span class="font-['Noto_Sans_JP'] text-[12px] font-bold text-[var(--text-primary)]">
+                    手動連携コードを表示
+                  </span>
+                </button>
+                <p id="manual-code" class="font-avenir mt-3 hidden select-all break-all text-[13px] font-bold tracking-wider text-[var(--text-primary)]"></p>
+                <p id="manual-code-note" class="mt-2 hidden font-['Noto_Sans_JP'] text-[10px] leading-[1.6] text-[var(--text-tertiary)]">
+                  このコードは一回限り有効です。第三者に共有しないでください。
                 </p>
               </div>
               <a
@@ -170,10 +168,92 @@ const deepLink = activationToken ? `goodcoiner://activate?token=${activationToke
 </BaseLayout>
 
 <script>
-  const btn = document.getElementById("open-app-btn") as HTMLAnchorElement | null;
-  if (btn) {
-    setTimeout(() => {
-      window.location.href = btn.href;
-    }, 800);
+type ActivationTokenResponse = {
+    activationToken: string;
+    deepLink: string;
+  };
+
+  let cachedActivation: ActivationTokenResponse | null = null;
+
+  const issueActivationToken = async (sessionId: string) => {
+    if (cachedActivation?.activationToken && cachedActivation.deepLink) {
+      return cachedActivation;
+    }
+
+    const response = await fetch("/api/billing/activation-token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify({ sessionId }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Activation token request failed");
+    }
+
+    const body = (await response.json()) as ActivationTokenResponse;
+    if (!body.activationToken || !body.deepLink) {
+      throw new Error("Activation token response is invalid");
+    }
+
+    cachedActivation = body;
+    return body;
+  };
+
+  const setButtonLoading = (button: HTMLButtonElement, loading: boolean) => {
+    button.disabled = loading;
+    button.dataset.originalText ??= button.textContent?.trim() ?? "";
+    const label = button.querySelector("span");
+    if (label) {
+      label.textContent = loading ? "発行中..." : button.dataset.originalText;
+    }
+  };
+
+  const showActivationError = () => {
+    document.getElementById("activation-error")?.classList.remove("hidden");
+  };
+
+  const openAppButton = document.getElementById("open-app-btn") as HTMLButtonElement | null;
+  if (openAppButton) {
+    openAppButton.addEventListener("click", async () => {
+      const sessionId = openAppButton.dataset.sessionId;
+      if (!sessionId) return;
+
+      setButtonLoading(openAppButton, true);
+      try {
+        const activation = await issueActivationToken(sessionId);
+        window.location.href = activation.deepLink;
+      } catch {
+        showActivationError();
+      } finally {
+        setButtonLoading(openAppButton, false);
+      }
+    });
+  }
+
+  const showCodeButton = document.getElementById("show-code-btn") as HTMLButtonElement | null;
+  if (showCodeButton) {
+    showCodeButton.addEventListener("click", async () => {
+      const sessionId = showCodeButton.dataset.sessionId;
+      if (!sessionId) return;
+
+      setButtonLoading(showCodeButton, true);
+      try {
+        const activation = await issueActivationToken(sessionId);
+        const code = document.getElementById("manual-code");
+        const note = document.getElementById("manual-code-note");
+        if (code) {
+          code.textContent = activation.activationToken ?? "";
+          code.classList.remove("hidden");
+        }
+        note?.classList.remove("hidden");
+      } catch {
+        showActivationError();
+      } finally {
+        setButtonLoading(showCodeButton, false);
+      }
+    });
   }
 </script>
