@@ -1,5 +1,8 @@
 ---
+import { getAppDownloadUrl } from "@/lib/download";
+
 const footerMobileTitleLines = ["Be a Good", "Coiner"];
+const appDownloadUrl = getAppDownloadUrl(import.meta.env);
 ---
 
 <footer
@@ -59,7 +62,7 @@ const footerMobileTitleLines = ["Be a Good", "Coiner"];
       <div class="flex w-full max-w-80 flex-col items-center gap-4 md:gap-5">
         <a
           id="download"
-          href="#"
+          href={appDownloadUrl}
           class="inline-flex h-14 w-full items-center justify-center gap-2.5 rounded-[82px] bg-[var(--accent-yellow)] px-8 py-3 md:h-auto md:py-4"
         >
           <img
