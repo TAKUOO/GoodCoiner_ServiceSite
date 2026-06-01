@@ -98,6 +98,7 @@ STRIPE_WEBHOOK_SECRET=whsec_...
 STRIPE_MONTHLY_PRICE_ID=price_1TUdjHFdzeKWsM49vdQRRley
 STRIPE_YEARLY_PRICE_ID=price_1TUdjPFdzeKWsM49tZMw4BnH
 PUBLIC_APP_ENV=staging
+PUBLIC_APP_DOWNLOAD_URL=https://example.com/GoodCoiner.dmg
 PUBLIC_SERVICE_SITE_URL=https://staging.goodcoiner.com
 PUBLIC_SITE_URL=https://staging.goodcoiner.com
 ```
@@ -119,6 +120,7 @@ For future production, set:
 
 ```dotenv
 PUBLIC_APP_ENV=production
+PUBLIC_APP_DOWNLOAD_URL=https://example.com/GoodCoiner.dmg
 PUBLIC_SERVICE_SITE_URL=https://goodcoiner.com
 PUBLIC_SITE_URL=https://goodcoiner.com
 ```
