@@ -1,6 +1,9 @@
 ---
+import { getAppDownloadUrl } from "@/lib/download";
+
 const heroTitleChars = [..."Be a Good Coiner"];
 const heroMobileTitleLines = ["Be a Good", "Coiner"];
+const appDownloadUrl = getAppDownloadUrl(import.meta.env);
 ---
 
 <section class="overflow-hidden bg-[var(--bg-canvas)] pb-0 text-center">
@@ -62,7 +65,7 @@ const heroMobileTitleLines = ["Be a Good", "Coiner"];
     <div class="hero-cta mx-auto mt-6 flex w-full max-w-[345px] flex-col items-center gap-4 md:mt-9 md:w-80 md:gap-5">
       <a
         id="download"
-        href="#"
+        href={appDownloadUrl}
         class="inline-flex h-[60px] w-full max-w-[262px] items-center justify-center gap-2.5 whitespace-nowrap rounded-[var(--radius-pill)] bg-[var(--accent-yellow)] px-8 py-4 text-[16px] font-bold leading-none tracking-[0.01em] text-[var(--text-primary)] transition hover:bg-[var(--accent-yellow-hover)] md:h-auto md:max-w-none md:text-[18px] md:leading-[32.38px]"
       >
         <img

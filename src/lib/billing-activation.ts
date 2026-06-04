@@ -18,10 +18,12 @@ type ActivationTokenRow = {
 
 type SubscriptionRow = {
   license_key: string;
+  entitlement_key: string | null;
   status: BillingStatus;
   current_period_end: number | null;
   early_access_expires_at: number | null;
   stripe_subscription_id: string | null;
+  cancel_at_period_end: number | null;
 };
 
 export const postBillingActivate: APIRoute = async ({ request, locals }) => {
@@ -66,7 +68,8 @@ export const postBillingActivate: APIRoute = async ({ request, locals }) => {
 
   let subscription = await db
     .prepare(
-      `SELECT license_key, status, current_period_end, early_access_expires_at, stripe_subscription_id
+      `SELECT license_key, entitlement_key, status, current_period_end,
+              early_access_expires_at, stripe_subscription_id, cancel_at_period_end
        FROM subscriptions
        WHERE license_key = ?`
     )
@@ -80,8 +83,8 @@ export const postBillingActivate: APIRoute = async ({ request, locals }) => {
         env,
         now
       );
-    } catch (err) {
-      console.error("Billing activation recovery error:", err);
+    } catch {
+      console.error("Billing activation recovery error");
       return json(
         { message: "決済情報の反映中です。少し待ってから再試行してください" },
         409,
@@ -101,8 +104,8 @@ export const postBillingActivate: APIRoute = async ({ request, locals }) => {
   let resolved: Awaited<ReturnType<typeof resolveBillingStatus>>;
   try {
     resolved = await resolveBillingStatus(subscription, env, now);
-  } catch (err) {
-    console.error("Billing activation verification error:", err);
+  } catch {
+    console.error("Billing activation verification error");
     return json(
       { message: "決済状態の確認に失敗しました。少し待ってから再試行してください" },
       409,
@@ -122,6 +125,8 @@ export const postBillingActivate: APIRoute = async ({ request, locals }) => {
     {
       billingStatus: resolved.billingStatus,
       currentPeriodEnd: resolved.currentPeriodEnd,
+      cancelAtPeriodEnd: resolved.cancelAtPeriodEnd,
+      entitlementKey: resolved.entitlementKey,
     },
     200,
     headers
@@ -142,11 +147,21 @@ async function resolveBillingStatus(
       ok: true;
       billingStatus: BillingStatus;
       currentPeriodEnd?: string;
+      cancelAtPeriodEnd: boolean;
+      entitlementKey: string;
     }
   | { ok: false; status: number; message: string }
 > {
+  const entitlementKey = row.entitlement_key ?? row.license_key;
+  const cancelAtPeriodEnd = row.cancel_at_period_end === 1;
+
   if (row.status === "owner") {
-    return { ok: true, billingStatus: "owner" };
+    return {
+      ok: true,
+      billingStatus: "owner",
+      cancelAtPeriodEnd,
+      entitlementKey,
+    };
   }
 
   if (row.status === "early_access") {
@@ -158,6 +173,8 @@ async function resolveBillingStatus(
           ok: true,
           billingStatus: "early_access",
           currentPeriodEnd: toIso(earlyAccessExpiresAt),
+          cancelAtPeriodEnd,
+          entitlementKey,
         }
       : {
           ok: false,
@@ -211,6 +228,8 @@ async function resolveBillingStatus(
     ok: true,
     billingStatus: row.status,
     currentPeriodEnd: toIso(periodEnd),
+    cancelAtPeriodEnd,
+    entitlementKey,
   };
 }
 
@@ -233,27 +252,34 @@ async function recoverSubscriptionFromStripe(
 
   const periodEnd =
     stripeSubscription.items.data[0]?.current_period_end ?? null;
+  const priceId = stripeSubscription.items.data[0]?.price?.id ?? "";
 
   await env.DB
     .prepare(
       `INSERT INTO subscriptions
-         (id, license_key, stripe_customer_id, stripe_subscription_id,
-          status, current_period_end, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+         (id, license_key, entitlement_key, stripe_customer_id, stripe_subscription_id,
+          status, current_period_end, cancel_at_period_end, price_id, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
        ON CONFLICT(license_key) DO UPDATE SET
+         entitlement_key         = excluded.entitlement_key,
          stripe_customer_id     = excluded.stripe_customer_id,
          stripe_subscription_id = excluded.stripe_subscription_id,
          status                 = excluded.status,
          current_period_end     = excluded.current_period_end,
+         cancel_at_period_end   = excluded.cancel_at_period_end,
+         price_id               = excluded.price_id,
          updated_at             = excluded.updated_at`
     )
     .bind(
       crypto.randomUUID(),
       licenseKey,
+      licenseKey,
       stripeSubscription.customer as string,
       stripeSubscription.id,
       plan,
       periodEnd,
+      stripeSubscription.cancel_at_period_end ? 1 : 0,
+      priceId,
       now,
       now
     )
@@ -261,10 +287,12 @@ async function recoverSubscriptionFromStripe(
 
   return {
     license_key: licenseKey,
+    entitlement_key: licenseKey,
     status: plan,
     current_period_end: periodEnd,
     early_access_expires_at: null,
     stripe_subscription_id: stripeSubscription.id,
+    cancel_at_period_end: stripeSubscription.cancel_at_period_end ? 1 : 0,
   };
 }
 

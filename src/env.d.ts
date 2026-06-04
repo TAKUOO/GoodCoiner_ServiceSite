@@ -1,5 +1,9 @@
 /// <reference types="astro/client" />
 
+interface ImportMetaEnv {
+  readonly PUBLIC_APP_DOWNLOAD_URL?: string;
+}
+
 interface Env {
   DB: D1Database;
   STRIPE_SECRET_KEY: string;
@@ -9,6 +13,7 @@ interface Env {
   STRIPE_SUCCESS_URL?: string;
   STRIPE_CANCEL_URL?: string;
   PUBLIC_APP_ENV?: "local" | "staging" | "production";
+  PUBLIC_APP_DOWNLOAD_URL?: string;
   PUBLIC_SERVICE_SITE_URL?: string;
   PUBLIC_SITE_URL: string;
   ALLOWED_ORIGIN: string;
