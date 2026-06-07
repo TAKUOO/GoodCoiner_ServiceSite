@@ -62,9 +62,9 @@ if (!sessionId) {
             </p>
           </div>
 
-          <div class="grid w-full gap-4 text-left md:grid-cols-[1fr_1fr]">
-            <section class="rounded-[24px] border border-[var(--border-soft)] bg-white p-6 shadow-[0_16px_44px_rgba(13,20,33,0.08)]">
-              <div class="flex items-center gap-4">
+          <section class="w-full rounded-[24px] border border-[var(--border-soft)] bg-white p-6 text-left shadow-[0_16px_44px_rgba(13,20,33,0.08)] md:p-8">
+            <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+              <div class="flex items-center gap-4 md:gap-5">
                 <img
                   src="/assets/icons/app-icon.png"
                   alt="GoodCoiner"
@@ -85,36 +85,28 @@ if (!sessionId) {
                 </div>
               </div>
 
-              <div class="mt-6 flex flex-col gap-3">
-                <p class="font-['Noto_Sans_JP'] text-[13px] font-bold text-[var(--text-primary)]">
-                  アプリをお持ちでない方
+              <div class="rounded-[18px] bg-[#fff7d6] px-4 py-3 md:min-w-[220px]">
+                <p class="font-['Noto_Sans_JP'] text-[12px] font-bold text-[#0d1421]">
+                  次のステップ
                 </p>
-                <p class="font-['Noto_Sans_JP'] text-[12px] leading-[1.8] text-[var(--text-secondary)]">
-                  先にMac版をインストールしてから、このページへ戻ってアプリを起動してください。
+                <p class="mt-1 font-['Noto_Sans_JP'] text-[12px] leading-[1.7] text-[#44516a]">
+                  アプリを起動して、購入したプランを反映します。
                 </p>
-                <a
-                  href={appDownloadUrl}
-                  class="inline-flex min-h-[48px] items-center justify-center rounded-[82px] border-2 border-[var(--border-strong)] px-6 py-2 text-center transition hover:bg-[#f6f6f6]"
-                >
-                  <span class="font-['Noto_Sans_JP'] text-[14px] font-bold text-[var(--text-primary)]">
-                    Mac版をダウンロード
-                  </span>
-                </a>
               </div>
-            </section>
+            </div>
 
-            <section class="rounded-[24px] bg-[#0d1421] p-6 shadow-[0_20px_60px_rgba(13,20,33,0.16)]">
-              <p class="font-['Noto_Sans_JP'] text-[13px] font-bold text-white">
-                アプリをお持ちの方
+            <div class="mt-7 rounded-[22px] bg-[#0d1421] p-6 text-center shadow-[0_20px_60px_rgba(13,20,33,0.16)]">
+              <p class="font-['Noto_Sans_JP'] text-[18px] font-black text-white">
+                アプリで利用を開始する
               </p>
-              <p class="mt-3 font-['Noto_Sans_JP'] text-[12px] leading-[1.8] text-white/60">
-                ボタンを押すとアプリが起動し、購入したプランが反映されます。
+              <p class="mx-auto mt-3 max-w-[460px] font-['Noto_Sans_JP'] text-[13px] leading-[1.8] text-white/60">
+                ボタンを押すとGoodCoinerが起動し、購入したプランが反映されます。
               </p>
               <button
                 id="open-app-btn"
                 type="button"
                 data-session-id={sessionId}
-                class="mt-5 inline-flex min-h-[52px] w-full items-center justify-center rounded-[82px] bg-[var(--accent-yellow)] px-8 py-2 text-center transition-opacity hover:opacity-90 disabled:opacity-60"
+                class="mx-auto mt-6 inline-flex min-h-[56px] w-full max-w-[440px] items-center justify-center rounded-[82px] bg-[var(--accent-yellow)] px-8 py-2 text-center transition-opacity hover:opacity-90 disabled:opacity-60"
               >
                 <span class="font-['Noto_Sans_JP'] text-[16px] font-bold text-[var(--text-primary)]">
                   アプリで利用を開始する
@@ -123,41 +115,50 @@ if (!sessionId) {
               <p id="activation-error" class="mt-3 hidden font-['Noto_Sans_JP'] text-[11px] leading-[1.7] text-red-300">
                 連携コードの発行に失敗しました。少し時間を置いて再度お試しください。
               </p>
-            </section>
-          </div>
+            </div>
+
+            <div class="mt-5 flex flex-col gap-3 rounded-[16px] bg-[#f7f8fb] p-4 md:flex-row md:items-center md:justify-between">
+              <div>
+                <p class="font-['Noto_Sans_JP'] text-[12px] font-bold text-[var(--text-primary)]">
+                  まだアプリをインストールしていない場合
+                </p>
+                <p class="mt-1 font-['Noto_Sans_JP'] text-[11px] leading-[1.7] text-[var(--text-secondary)]">
+                  Mac版をインストールしてから、このページに戻って利用を開始してください。
+                </p>
+              </div>
+              <a
+                href={appDownloadUrl}
+                class="inline-flex min-h-[42px] shrink-0 items-center justify-center rounded-[82px] border border-[var(--border-strong)] px-5 py-2 text-center transition hover:bg-white"
+              >
+                <span class="font-['Noto_Sans_JP'] text-[12px] font-bold text-[var(--text-primary)]">
+                  Mac版をダウンロード
+                </span>
+              </a>
+            </div>
+          </section>
 
           <details class="w-full rounded-[18px] border border-[var(--border-soft)] bg-white p-4 text-left">
             <summary class="cursor-pointer font-['Noto_Sans_JP'] text-[13px] font-bold text-[var(--text-primary)] select-none">
               アプリが起動しない場合
             </summary>
-            <div class="mt-4 grid gap-3 md:grid-cols-[1fr_1fr]">
-              <div class="rounded-[12px] bg-[#fafafa] p-4">
-                <p class="mb-2 font-['Noto_Sans_JP'] text-[11px] leading-[1.7] text-[var(--text-tertiary)]">
-                  アプリをインストール後、手動連携コードを表示して、設定画面の決済連携欄に入力してください。コードは短時間で期限切れになります。
-                </p>
-                <button
-                  id="show-code-btn"
-                  type="button"
-                  data-session-id={sessionId}
-                  class="mt-2 inline-flex min-h-[40px] items-center justify-center rounded-[82px] border border-[var(--border-strong)] px-5 py-2 text-center transition hover:bg-white disabled:opacity-60"
-                >
-                  <span class="font-['Noto_Sans_JP'] text-[12px] font-bold text-[var(--text-primary)]">
-                    手動連携コードを表示
-                  </span>
-                </button>
-                <p id="manual-code" class="font-avenir mt-3 hidden select-all break-all text-[13px] font-bold tracking-wider text-[var(--text-primary)]"></p>
-                <p id="manual-code-note" class="mt-2 hidden font-['Noto_Sans_JP'] text-[10px] leading-[1.6] text-[var(--text-tertiary)]">
-                  このコードは一回限り有効です。第三者に共有しないでください。
-                </p>
-              </div>
-              <a
-                href={appDownloadUrl}
-                class="inline-flex min-h-[48px] items-center justify-center rounded-[82px] bg-[#0d1421] px-6 py-2 text-center transition-opacity hover:opacity-90"
+            <div class="mt-4 rounded-[12px] bg-[#fafafa] p-4">
+              <p class="mb-2 font-['Noto_Sans_JP'] text-[11px] leading-[1.7] text-[var(--text-tertiary)]">
+                アプリが自動で起動しない場合は、手動連携コードを表示して、アプリの設定画面にある決済連携欄へ入力してください。コードは短時間で期限切れになります。
+              </p>
+              <button
+                id="show-code-btn"
+                type="button"
+                data-session-id={sessionId}
+                class="mt-2 inline-flex min-h-[40px] items-center justify-center rounded-[82px] border border-[var(--border-strong)] px-5 py-2 text-center transition hover:bg-white disabled:opacity-60"
               >
-                <span class="font-['Noto_Sans_JP'] text-[14px] font-bold text-white">
-                  アプリをダウンロード
+                <span class="font-['Noto_Sans_JP'] text-[12px] font-bold text-[var(--text-primary)]">
+                  手動連携コードを表示
                 </span>
-              </a>
+              </button>
+              <p id="manual-code" class="font-avenir mt-3 hidden select-all break-all text-[13px] font-bold tracking-wider text-[var(--text-primary)]"></p>
+              <p id="manual-code-note" class="mt-2 hidden font-['Noto_Sans_JP'] text-[10px] leading-[1.6] text-[var(--text-tertiary)]">
+                このコードは一回限り有効です。第三者に共有しないでください。
+              </p>
             </div>
           </details>
 
@@ -207,7 +208,7 @@ type ActivationTokenResponse = {
     button.dataset.originalText ??= button.textContent?.trim() ?? "";
     const label = button.querySelector("span");
     if (label) {
-      label.textContent = loading ? "発行中..." : button.dataset.originalText;
+      label.textContent = loading ? "連携を準備しています..." : button.dataset.originalText;
     }
   };
 
