@@ -31,7 +31,7 @@ export const postBillingWebhook: APIRoute = async ({ request, locals }) => {
 
   try {
     const rawBody = await request.text();
-    event = stripe.webhooks.constructEvent(
+    event = await stripe.webhooks.constructEventAsync(
       rawBody,
       signature,
       env.STRIPE_WEBHOOK_SECRET
