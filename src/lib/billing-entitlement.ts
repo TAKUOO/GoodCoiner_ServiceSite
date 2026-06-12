@@ -1,4 +1,5 @@
 import type { APIRoute } from "astro";
+import Stripe from "stripe";
 
 type BillingStatus = "monthly" | "yearly" | "free" | "expired" | "early_access" | "owner";
 
@@ -8,6 +9,7 @@ type EntitlementRow = {
   status: BillingStatus;
   current_period_end: number | null;
   early_access_expires_at: number | null;
+  stripe_subscription_id: string | null;
   cancel_at_period_end: number | null;
   price_id: string | null;
   updated_at: number;
@@ -32,7 +34,8 @@ export const postBillingEntitlement: APIRoute = async ({ request, locals }) => {
   const row = await env.DB
     .prepare(
       `SELECT entitlement_key, license_key, status, current_period_end,
-              early_access_expires_at, cancel_at_period_end, price_id, updated_at
+              early_access_expires_at, stripe_subscription_id,
+              cancel_at_period_end, price_id, updated_at
        FROM subscriptions
        WHERE entitlement_key = ? OR license_key = ?`
     )
@@ -52,7 +55,9 @@ export const postBillingEntitlement: APIRoute = async ({ request, locals }) => {
     );
   }
 
-  return json(toEntitlementResponse(row), 200, headers);
+  const resolvedRow = await refreshStripeSubscription(row, env).catch(() => row);
+
+  return json(toEntitlementResponse(resolvedRow), 200, headers);
 };
 
 export const optionsBillingEntitlement: APIRoute = ({ locals }) => {
@@ -82,6 +87,87 @@ export function toEntitlementResponse(row: EntitlementRow) {
     cancelAtPeriodEnd: row.cancel_at_period_end === 1,
     entitlementKey: row.entitlement_key ?? row.license_key,
   };
+}
+
+async function refreshStripeSubscription(
+  row: EntitlementRow,
+  env: App.Locals["runtime"]["env"]
+): Promise<EntitlementRow> {
+  if (
+    !env.STRIPE_SECRET_KEY ||
+    !row.stripe_subscription_id ||
+    (row.status !== "monthly" && row.status !== "yearly")
+  ) {
+    return row;
+  }
+
+  const stripe = new Stripe(env.STRIPE_SECRET_KEY);
+  const subscription = await stripe.subscriptions.retrieve(row.stripe_subscription_id);
+  const item = subscription.items.data[0];
+  const priceId = item?.price?.id ?? row.price_id ?? "";
+  const currentPeriodEnd = item?.current_period_end ?? row.current_period_end;
+  const now = Math.floor(Date.now() / 1000);
+  const active =
+    subscription.status === "active" || subscription.status === "trialing";
+  const status = active ? planFromPriceId(priceId, row.status, env) : "expired";
+  const cancelAtPeriodEnd = isSubscriptionCancelScheduled(subscription, now)
+    ? 1
+    : 0;
+
+  await env.DB
+    .prepare(
+      `UPDATE subscriptions
+       SET status = ?,
+           current_period_end = ?,
+           cancel_at_period_end = ?,
+           price_id = ?,
+           updated_at = ?
+       WHERE license_key = ?`
+    )
+    .bind(
+      status,
+      currentPeriodEnd,
+      cancelAtPeriodEnd,
+      priceId,
+      now,
+      row.license_key
+    )
+    .run();
+
+  return {
+    ...row,
+    status,
+    current_period_end: currentPeriodEnd,
+    cancel_at_period_end: cancelAtPeriodEnd,
+    price_id: priceId,
+    updated_at: now,
+  };
+}
+
+function isSubscriptionCancelScheduled(
+  subscription: Stripe.Subscription,
+  now: number
+): boolean {
+  return (
+    subscription.cancel_at_period_end ||
+    (typeof subscription.cancel_at === "number" && subscription.cancel_at > now)
+  );
+}
+
+function planFromPriceId(
+  priceId: string,
+  fallback: BillingStatus,
+  env: App.Locals["runtime"]["env"]
+): BillingStatus {
+  if (priceId === env.STRIPE_YEARLY_PRICE_ID) {
+    return "yearly";
+  }
+
+  if (priceId === env.STRIPE_MONTHLY_PRICE_ID) {
+    return "monthly";
+  }
+
+  return fallback === "monthly" || fallback === "yearly" ? fallback : "expired";
 }
 
 function corsHeaders(origin: string) {

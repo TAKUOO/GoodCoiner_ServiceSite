@@ -153,7 +153,7 @@ async function resolveBillingStatus(
   | { ok: false; status: number; message: string }
 > {
   const entitlementKey = row.entitlement_key ?? row.license_key;
-  const cancelAtPeriodEnd = row.cancel_at_period_end === 1;
+  let cancelAtPeriodEnd = row.cancel_at_period_end === 1;
 
   if (row.status === "owner") {
     return {
@@ -215,6 +215,10 @@ async function resolveBillingStatus(
   const periodEnd =
     stripeSubscription.items.data[0]?.current_period_end ??
     row.current_period_end;
+  cancelAtPeriodEnd =
+    stripeSubscription.cancel_at_period_end ||
+    (typeof stripeSubscription.cancel_at === "number" &&
+      stripeSubscription.cancel_at > now);
 
   if (!periodEnd || periodEnd <= now) {
     return {

@@ -14,6 +14,13 @@ type EntitlementInput = {
   updatedAt: number;
 };
 
+const isSubscriptionCancelScheduled = (
+  subscription: Stripe.Subscription,
+  now: number
+): boolean =>
+  subscription.cancel_at_period_end ||
+  (typeof subscription.cancel_at === "number" && subscription.cancel_at > now);
+
 export const postBillingWebhook: APIRoute = async ({ request, locals }) => {
   const env = locals.runtime.env;
 
@@ -156,7 +163,10 @@ async function upsertStripeSubscription(
     stripeSubscriptionId: input.subscription.id,
     billingStatus,
     currentPeriodEnd,
-    cancelAtPeriodEnd: input.subscription.cancel_at_period_end,
+    cancelAtPeriodEnd: isSubscriptionCancelScheduled(
+      input.subscription,
+      input.now
+    ),
     priceId,
     updatedAt: input.now,
   });
