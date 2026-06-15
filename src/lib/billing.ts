@@ -4,6 +4,22 @@ type BillingPlan = "monthly" | "yearly";
 
 type CheckoutEnv = App.Locals["runtime"]["env"];
 
+function corsHeaders(env: CheckoutEnv): Record<string, string> {
+  const origin = env.ALLOWED_ORIGIN ?? "*";
+  return {
+    "Access-Control-Allow-Origin": origin,
+    "Access-Control-Allow-Methods": "POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  };
+}
+
+export function handleCheckoutOptions(locals: App.Locals): Response {
+  return new Response(null, {
+    status: 204,
+    headers: corsHeaders(locals.runtime.env),
+  });
+}
+
 const DEFAULT_STAGING_SITE_URL = "https://staging.goodcoiner.com";
 
 export async function createCheckoutSession(
@@ -11,24 +27,25 @@ export async function createCheckoutSession(
   locals: App.Locals
 ): Promise<Response> {
   const env = locals.runtime.env;
+  const cors = corsHeaders(env);
 
   let plan: BillingPlan;
   try {
     const body = await request.json();
     if (body.plan !== "monthly" && body.plan !== "yearly") {
-      return json({ error: "Invalid plan" }, 400);
+      return json({ error: "Invalid plan" }, 400, cors);
     }
     plan = body.plan;
   } catch {
-    return json({ error: "Invalid request body" }, 400);
+    return json({ error: "Invalid request body" }, 400, cors);
   }
 
   if (!env.STRIPE_SECRET_KEY) {
-    return json({ error: "Stripe secret key not configured" }, 500);
+    return json({ error: "Stripe secret key not configured" }, 500, cors);
   }
 
   if (env.PUBLIC_APP_ENV === "staging" && !env.STRIPE_SECRET_KEY.startsWith("sk_test_")) {
-    return json({ error: "Staging must use a Stripe test mode secret key" }, 500);
+    return json({ error: "Staging must use a Stripe test mode secret key" }, 500, cors);
   }
 
   const priceId =
@@ -37,7 +54,7 @@ export async function createCheckoutSession(
       : env.STRIPE_YEARLY_PRICE_ID;
 
   if (!priceId) {
-    return json({ error: "Price ID not configured" }, 500);
+    return json({ error: "Price ID not configured" }, 500, cors);
   }
 
   const licenseKey = crypto.randomUUID();
@@ -56,10 +73,10 @@ export async function createCheckoutSession(
       },
     });
 
-    return json({ url: session.url }, 200);
+    return json({ url: session.url }, 200, cors);
   } catch {
     console.error("Stripe checkout error");
-    return json({ error: "Failed to create checkout session" }, 500);
+    return json({ error: "Failed to create checkout session" }, 500, cors);
   }
 }
 
@@ -88,9 +105,13 @@ function normalizeSiteUrl(url: string): string {
   return url.replace(/\/+$/, "");
 }
 
-export function json(body: unknown, status: number) {
+export function json(
+  body: unknown,
+  status: number,
+  extraHeaders: Record<string, string> = {}
+) {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...extraHeaders },
   });
 }
