@@ -5,16 +5,19 @@ interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  noindex?: boolean;
 }
 
 const {
   title = "GoodCoiner",
   description = "トレードを、感覚から仕組みへ。Be a Good Coiner",
   ogImage = "/ogp.png",
+  noindex = false,
 } = Astro.props;
 
-const canonicalUrl = Astro.url;
-const ogImageUrl = new URL(ogImage, Astro.site ?? canonicalUrl).toString();
+const siteBaseUrl = Astro.site ?? Astro.url;
+const canonicalUrl = new URL(Astro.url.pathname, siteBaseUrl).toString();
+const ogImageUrl = new URL(ogImage, siteBaseUrl).toString();
 ---
 
 <!doctype html>
@@ -29,6 +32,7 @@ const ogImageUrl = new URL(ogImage, Astro.site ?? canonicalUrl).toString();
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="canonical" href={canonicalUrl} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={title} />
