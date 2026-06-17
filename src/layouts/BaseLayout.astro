@@ -6,6 +6,7 @@ interface Props {
   description?: string;
   ogImage?: string;
   noindex?: boolean;
+  structuredData?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
@@ -13,11 +14,17 @@ const {
   description = "トレードを、感覚から仕組みへ。Be a Good Coiner",
   ogImage = "/ogp.png",
   noindex = false,
+  structuredData,
 } = Astro.props;
 
 const siteBaseUrl = Astro.site ?? Astro.url;
 const canonicalUrl = new URL(Astro.url.pathname, siteBaseUrl).toString();
 const ogImageUrl = new URL(ogImage, siteBaseUrl).toString();
+const structuredDataItems = structuredData
+  ? Array.isArray(structuredData)
+    ? structuredData
+    : [structuredData]
+  : [];
 ---
 
 <!doctype html>
@@ -43,6 +50,9 @@ const ogImageUrl = new URL(ogImage, siteBaseUrl).toString();
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
+    {structuredDataItems.map((item) => (
+      <script type="application/ld+json" is:inline set:html={JSON.stringify(item)} />
+    ))}
   </head>
   <body>
     <slot />

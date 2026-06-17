@@ -8,11 +8,73 @@ import Story from "@/components/Story.astro";
 import Pricing from "@/components/Pricing.astro";
 import Faq from "@/components/Faq.astro";
 import Footer from "@/components/Footer.astro";
+import { homeFaqs } from "@/data/home-faqs";
+import { getAppDownloadUrl } from "@/lib/download";
+
+const siteUrl = Astro.site ?? Astro.url;
+const appDownloadUrl = new URL(getAppDownloadUrl(import.meta.env), siteUrl).toString();
+const pageUrl = new URL(Astro.url.pathname, siteUrl).toString();
+const ogImageUrl = new URL("/ogp.png", siteUrl).toString();
+const pageTitle = "GoodCoiner | 仮想通貨の取引履歴・損益分析・利確予約をまとめて管理";
+const pageDescription =
+  "仮想通貨の取引履歴管理、損益分析、トレードルールの振り返り、自動利確予約をひとつにまとめたアプリ。感覚や感情に左右されがちなトレードを、可視化・分析・管理で支えます。";
+
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "GoodCoiner",
+    alternateName: "グッドコイナー",
+    description: pageDescription,
+    url: pageUrl,
+    image: ogImageUrl,
+    applicationCategory: "FinanceApplication",
+    operatingSystem: "macOS",
+    inLanguage: "ja-JP",
+    downloadUrl: appDownloadUrl,
+    offers: [
+      {
+        "@type": "Offer",
+        name: "無料プラン",
+        price: "0",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
+      },
+      {
+        "@type": "Offer",
+        name: "月額プラン",
+        price: "6.99",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
+      },
+      {
+        "@type": "Offer",
+        name: "年額プラン",
+        price: "70",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
+      },
+    ],
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: homeFaqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  },
+];
 ---
 
 <BaseLayout
-  title="GoodCoiner | 仮想通貨の取引履歴・損益分析・利確予約をまとめて管理"
-  description="仮想通貨の取引履歴管理、損益分析、トレードルールの振り返り、自動利確予約をひとつにまとめたアプリ。感覚や感情に左右されがちなトレードを、可視化・分析・管理で支えます。"
+  title={pageTitle}
+  description={pageDescription}
+  structuredData={structuredData}
 >
   <Header />
   <main>
