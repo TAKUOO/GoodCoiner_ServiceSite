@@ -7,10 +7,6 @@ interface Props {
   ogImage?: string;
   noindex?: boolean;
   structuredData?: Record<string, unknown> | Record<string, unknown>[];
-  breadcrumbs?: {
-    name: string;
-    url: string;
-  }[];
   preloadImages?: {
     href: string;
     type?: string;
@@ -24,7 +20,6 @@ const {
   ogImage = "/ogp.png",
   noindex = false,
   structuredData,
-  breadcrumbs = [],
   preloadImages = [],
 } = Astro.props;
 
@@ -33,27 +28,11 @@ const canonicalUrl = new URL(Astro.url.pathname, siteBaseUrl).toString();
 const ogImageUrl = new URL(ogImage, siteBaseUrl).toString();
 const googleFontsUrl =
   "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=Noto+Sans+JP:wght@400;700;900&display=swap";
-const breadcrumbStructuredData =
-  breadcrumbs.length > 0
-    ? {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        itemListElement: breadcrumbs.map((item, index) => ({
-          "@type": "ListItem",
-          position: index + 1,
-          name: item.name,
-          item: new URL(item.url, siteBaseUrl).toString(),
-        })),
-      }
-    : undefined;
 const structuredDataItems = structuredData
-  ? [
-      ...(Array.isArray(structuredData) ? structuredData : [structuredData]),
-      ...(breadcrumbStructuredData ? [breadcrumbStructuredData] : []),
-    ]
-  : breadcrumbStructuredData
-    ? [breadcrumbStructuredData]
-    : [];
+  ? Array.isArray(structuredData)
+    ? structuredData
+    : [structuredData]
+  : [];
 ---
 
 <!doctype html>
