@@ -72,7 +72,10 @@ const appDownloadUrl = getAppDownloadUrl(import.meta.env);
           src="/assets/icons/Finder_Icon_macOS.png"
           alt=""
           aria-hidden="true"
+          width="56"
+          height="56"
           class="h-7 w-7"
+          decoding="async"
         />
         Mac版をダウンロード
       </a>
@@ -88,10 +91,14 @@ const appDownloadUrl = getAppDownloadUrl(import.meta.env);
       <div class="relative overflow-hidden rounded-[10px] bg-[#eeeeee] md:rounded-[34px]">
         <video
           src="/dashboard.mp4"
+          poster="/dashboard-poster.webp"
+          preload="metadata"
           autoplay
           muted
           loop
           playsinline
+          width="1266"
+          height="924"
           class="block h-auto w-full"
         ></video>
       </div>

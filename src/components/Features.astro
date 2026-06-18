@@ -5,6 +5,9 @@ const featureCards = [
     description:
       "対応取引所の現物・信用取引をまとめて確認。保有銘柄ごとの損益、平均価格、評価損益、損益予測を可視化し、仮想通貨トレードの全体像を把握できます。",
     image: "/figma/features/tracker.png",
+    webp: "/figma/features/tracker.webp",
+    width: 712,
+    height: 405,
     imageAlt: "取引履歴・保有銘柄の一元管理トラッカーのイメージ",
     offsetClass: "md:mt-0",
   },
@@ -13,6 +16,9 @@ const featureCards = [
     description:
       "目標利益額をあらかじめ決めて利確予約。相場中の迷いや感情的な判断を減らし、決めたルールに沿ったトレードを支えます。",
     image: "/figma/features/auto-take-profit.png",
+    webp: "/figma/features/auto-take-profit.webp",
+    width: 711,
+    height: 389,
     imageAlt: "自動利確予約のイメージ",
     offsetClass: "md:mt-[32px]",
   },
@@ -21,6 +27,9 @@ const featureCards = [
     description:
       "日々の損益やトレード結果をカレンダー形式で可視化。勝ち負けの傾向を振り返り、次の判断に活かすための改善点を見つけやすくします。",
     image: "/figma/features/performance-analysis.png",
+    webp: "/figma/features/performance-analysis.webp",
+    width: 711,
+    height: 389,
     imageAlt: "損益・パフォーマンス分析のイメージ",
     offsetClass: "md:-mt-[8px]",
   },
@@ -29,6 +38,9 @@ const featureCards = [
     description:
       "守ると決めたトレードルールを記録し、行動をあとから振り返れます。感覚に頼らず、一貫した判断を続けるための土台を作ります。",
     image: "/figma/features/rule-review.png",
+    webp: "/figma/features/rule-review.webp",
+    width: 711,
+    height: 389,
     imageAlt: "トレードルール管理のイメージ",
     offsetClass: "md:mt-[24px]",
   },
@@ -61,12 +73,18 @@ const featureCards = [
       {featureCards.map((card) => (
         <article class:list={["flex w-full flex-col gap-6 md:w-[calc(50%-50px)] md:max-w-[480px] md:gap-10", card.offsetClass]}>
           <div>
-            <img
-              src={card.image}
-              alt={card.imageAlt}
-              class="block h-auto w-full"
-              loading="lazy"
-            />
+            <picture>
+              <source srcset={card.webp} type="image/webp" />
+              <img
+                src={card.image}
+                alt={card.imageAlt}
+                width={card.width}
+                height={card.height}
+                class="block h-auto w-full"
+                loading="lazy"
+                decoding="async"
+              />
+            </picture>
           </div>
 
           <div class="flex flex-col gap-4 md:gap-6">
