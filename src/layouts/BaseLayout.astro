@@ -26,6 +26,8 @@ const {
 const siteBaseUrl = Astro.site ?? Astro.url;
 const canonicalUrl = new URL(Astro.url.pathname, siteBaseUrl).toString();
 const ogImageUrl = new URL(ogImage, siteBaseUrl).toString();
+const siteName = "GoodCoiner";
+const twitterHandle = "@emu_jpy";
 const googleFontsUrl =
   "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800;900&family=Noto+Sans+JP:wght@400;700;900&display=swap";
 const structuredDataItems = structuredData
@@ -70,12 +72,19 @@ const structuredDataItems = structuredData
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+    <meta property="og:site_name" content={siteName} />
     <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="2400" />
+    <meta property="og:image:height" content="1260" />
+    <meta property="og:image:alt" content={siteName} />
     <meta property="og:locale" content="ja_JP" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content={twitterHandle} />
+    <meta name="twitter:creator" content={twitterHandle} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={siteName} />
     {structuredDataItems.map((item) => (
       <script type="application/ld+json" is:inline set:html={JSON.stringify(item)} />
     ))}
