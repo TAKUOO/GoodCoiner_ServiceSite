@@ -89,6 +89,16 @@ const appDownloadUrl = getAppDownloadUrl(import.meta.env);
   <div class="hero-video-wrap mx-auto mt-12 max-w-[1320px] px-6 md:mt-14 md:px-6">
     <div class="mx-auto rounded-[14px] border-[4px] border-[#eeeeee] bg-[#eeeeee] md:max-w-none md:rounded-[var(--radius-panel)] md:border-[14px]">
       <div class="relative overflow-hidden rounded-[10px] bg-[#eeeeee] md:rounded-[34px]">
+        <img
+          src="/dashboard-poster.webp"
+          alt=""
+          aria-hidden="true"
+          width="1266"
+          height="924"
+          class="block h-auto w-full"
+          fetchpriority="high"
+          decoding="async"
+        />
         <video
           src="/dashboard.mp4"
           poster="/dashboard-poster.webp"
@@ -99,7 +109,7 @@ const appDownloadUrl = getAppDownloadUrl(import.meta.env);
           playsinline
           width="1266"
           height="924"
-          class="block h-auto w-full"
+          class="absolute inset-0 h-full w-full object-cover"
         ></video>
       </div>
     </div>
@@ -134,7 +144,6 @@ const appDownloadUrl = getAppDownloadUrl(import.meta.env);
   }
 
   .hero-video-wrap {
-    opacity: 0;
     transform: translateY(18px) scale(0.985);
     animation: hero-video-reveal 0.62s cubic-bezier(0.2, 0.82, 0.2, 1) 1.62s both;
   }
@@ -184,13 +193,11 @@ const appDownloadUrl = getAppDownloadUrl(import.meta.env);
 
   @keyframes hero-video-reveal {
     0% {
-      opacity: 0;
       transform: translateY(18px) scale(0.985);
       filter: blur(8px);
     }
 
     100% {
-      opacity: 1;
       transform: translateY(0) scale(1);
       filter: blur(0);
     }
