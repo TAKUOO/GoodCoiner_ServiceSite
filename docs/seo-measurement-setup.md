@@ -7,8 +7,10 @@
 - `https://goodcoiner.com/robots.txt` は本番で `200` を返している。
 - `https://goodcoiner.com/sitemap.xml` は本番で `200` を返している。
 - `public/robots.txt` は `https://goodcoiner.com/sitemap.xml` を指定済み。
-- Google Search Console の verification tag / html file は未設定。
-- Bing Webmaster Tools の verification tag / xml file は未設定。
+- Google Search Console は `goodcoiner.com` の所有権確認済み。
+- Google Search Console に `https://goodcoiner.com/sitemap.xml` を送信済み。
+- Bing Webmaster Tools は `goodcoiner.com` を追加済み。
+- Bing Webmaster Tools に `https://goodcoiner.com/sitemap.xml` を送信済みで、ステータスは Success。
 - GA4 / Google Tag Manager / Microsoft Clarity などの計測タグは未設定。
 - 現在のプライバシーポリシーでは、サイト自体は行動追跡目的の Cookie や解析ツールを使っていないと説明している。GA4 / GTM / Clarity などを追加する場合は、先にプライバシーポリシーを更新する。
 
@@ -106,14 +108,14 @@ GA4 を入れる場合の手順:
 
 ## Issue #20 の完了条件
 
-- [ ] Google Search Console の property が verify 済み。
-- [ ] Google Search Console に sitemap を送信済み。
-- [ ] Search Console でインデックス状況を確認できる。
-- [ ] Bing Webmaster Tools で verify または import 済み。
-- [ ] Bing Webmaster Tools に sitemap を送信済み。
-- [ ] 週次確認項目が決まっている。
-- [ ] GA4 などの解析ツールを入れるか判断済み。
-- [ ] 行動計測タグを入れる場合は、先にプライバシーポリシーを更新済み。
+- [x] Google Search Console の property が verify 済み。
+- [x] Google Search Console に sitemap を送信済み。
+- [x] Search Console でインデックス状況を確認できる。
+- [x] Bing Webmaster Tools で verify または import 済み。
+- [x] Bing Webmaster Tools に sitemap を送信済み。
+- [x] 週次確認項目が決まっている。
+- [x] GA4 などの解析ツールを入れるか判断済み。現時点では未導入。
+- [x] 行動計測タグを入れる場合は、先にプライバシーポリシーを更新する方針。
 
 ## 参考
 
