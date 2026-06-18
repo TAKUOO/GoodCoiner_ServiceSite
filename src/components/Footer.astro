@@ -90,7 +90,7 @@ const appDownloadUrl = getAppDownloadUrl(import.meta.env);
     </div>
 
     <div class="border-t border-[rgba(255,255,255,0.12)] pt-12 md:border-0 md:pt-0">
-      <div class="flex flex-col items-center gap-8 md:flex-row md:items-end md:justify-between">
+      <div class="flex flex-col items-center gap-8 md:flex-row md:items-center md:justify-between">
         <a href="/" class="inline-flex items-center">
         <img
           src="/assets/logo/header_logo.svg"
@@ -101,34 +101,35 @@ const appDownloadUrl = getAppDownloadUrl(import.meta.env);
         </a>
 
         <div class="flex w-full flex-col items-center gap-6 md:max-w-[568px] md:items-end md:gap-3">
-          <div class="grid w-full max-w-80 grid-cols-2 items-center justify-items-center gap-x-6 gap-y-2 md:max-w-[568px] md:grid-cols-3 md:justify-items-end">
+          <div class="flex w-full flex-wrap items-center justify-center gap-x-3 gap-y-1 md:justify-end md:gap-x-4">
           <a
             href="#contact"
-            class="font-inter-jp text-[11px] font-bold leading-[32.38px] tracking-[0.08em] text-[var(--text-inverse)] md:text-[13px] md:tracking-[1.04px]"
+            class="font-inter-jp text-[11px] font-bold leading-[32.38px] tracking-[0.08em] text-[var(--text-inverse)] md:text-[13px] md:leading-5 md:tracking-[1.04px]"
           >
             お問い合わせ
           </a>
           <a
             href="/usage"
-            class="font-inter-jp text-[11px] font-bold leading-[32.38px] tracking-[0.08em] text-[var(--text-inverse)] md:text-[13px] md:tracking-[1.04px]"
+            class="font-inter-jp text-[11px] font-bold leading-[32.38px] tracking-[0.08em] text-[var(--text-inverse)] md:text-[13px] md:leading-5 md:tracking-[1.04px]"
           >
             利用方法
           </a>
           <a
             href="/terms"
-            class="font-inter-jp text-[11px] font-bold leading-[32.38px] tracking-[0.08em] text-[var(--text-inverse)] md:text-[13px] md:tracking-[1.04px]"
+            class="font-inter-jp text-[11px] font-bold leading-[32.38px] tracking-[0.08em] text-[var(--text-inverse)] md:text-[13px] md:leading-5 md:tracking-[1.04px]"
           >
             利用規約
           </a>
+          <span class="basis-full" aria-hidden="true"></span>
           <a
             href="/privacy"
-            class="font-inter-jp text-[11px] font-bold leading-[32.38px] tracking-[0.08em] text-[var(--text-inverse)] md:text-[13px] md:tracking-[1.04px]"
+            class="font-inter-jp text-[11px] font-bold leading-[32.38px] tracking-[0.08em] text-[var(--text-inverse)] md:text-[13px] md:leading-5 md:tracking-[1.04px]"
           >
             プライバシーポリシー
           </a>
           <a
             href="/legal"
-            class="col-span-2 font-inter-jp text-[11px] font-bold leading-[32.38px] tracking-[0.08em] text-[var(--text-inverse)] md:col-span-1 md:whitespace-nowrap md:text-[13px] md:tracking-[1.04px]"
+            class="font-inter-jp text-[11px] font-bold leading-[32.38px] tracking-[0.08em] text-[var(--text-inverse)] md:whitespace-nowrap md:text-[13px] md:leading-5 md:tracking-[1.04px]"
           >
             特定商取引法に基づく表記
           </a>
