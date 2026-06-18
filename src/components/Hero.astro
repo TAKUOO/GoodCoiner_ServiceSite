@@ -100,7 +100,6 @@ const appDownloadUrl = getAppDownloadUrl(import.meta.env);
           decoding="async"
         />
         <video
-          src="/dashboard.mp4"
           poster="/dashboard-poster.webp"
           preload="metadata"
           autoplay
@@ -109,8 +108,10 @@ const appDownloadUrl = getAppDownloadUrl(import.meta.env);
           playsinline
           width="1266"
           height="924"
-          class="absolute inset-0 h-full w-full object-cover"
-        ></video>
+          class="absolute inset-0 hidden h-full w-full object-cover md:block"
+        >
+          <source src="/dashboard.mp4" type="video/mp4" media="(min-width: 768px)" />
+        </video>
       </div>
     </div>
   </div>
