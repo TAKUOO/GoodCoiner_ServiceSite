@@ -1,6 +1,7 @@
 /// <reference types="astro/client" />
 
 interface ImportMetaEnv {
+  readonly PUBLIC_APP_ENV?: "local" | "staging" | "production";
   readonly PUBLIC_APP_DOWNLOAD_URL?: string;
 }
 

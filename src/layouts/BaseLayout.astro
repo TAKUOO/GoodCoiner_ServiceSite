@@ -23,6 +23,8 @@ const {
   preloadImages = [],
 } = Astro.props;
 
+const isStaging = import.meta.env.PUBLIC_APP_ENV === "staging";
+const shouldNoindex = noindex || isStaging;
 const siteBaseUrl = Astro.site ?? Astro.url;
 const canonicalUrl = new URL(Astro.url.pathname, siteBaseUrl).toString();
 const ogImageUrl = new URL(ogImage, siteBaseUrl).toString();
@@ -67,7 +69,7 @@ const structuredDataItems = structuredData
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="canonical" href={canonicalUrl} />
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {shouldNoindex && <meta name="robots" content="noindex, nofollow" />}
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={title} />
