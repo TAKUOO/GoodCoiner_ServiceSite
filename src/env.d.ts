@@ -18,6 +18,9 @@ interface Env {
   PUBLIC_SERVICE_SITE_URL?: string;
   PUBLIC_SITE_URL: string;
   ALLOWED_ORIGIN: string;
+  // 市場イベント連携用の外部APIキー（Cloudflare Pages の環境変数で設定）
+  TRADING_ECONOMICS_API_KEY?: string;
+  COINDAR_API_KEY?: string;
 }
 
 type Runtime = import("@astrojs/cloudflare").Runtime<Env>;

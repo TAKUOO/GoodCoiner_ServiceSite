@@ -15,3 +15,10 @@ PUBLIC_SITE_URL=http://localhost:4321
 
 # CORS: デスクトップアプリの origin (Electron の場合は app:// または localhost:port)
 ALLOWED_ORIGIN=http://localhost:1212
+
+# 市場イベント連携 (/api/market-events)
+# Trading Economics の有料プラン契約後に発行される API キー (例: client:secret)
+# 未設定の場合 /api/market-events は空配列 [] を返す（アプリは落ちない）
+TRADING_ECONOMICS_API_KEY=your_trading_economics_api_key_here
+# crypto イベント連携 (次フェーズ)
+COINDAR_API_KEY=your_coindar_api_key_here
