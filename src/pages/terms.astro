@@ -2,8 +2,10 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
+import { getContactMailtoUrl } from "@/lib/contact";
 
 const lastUpdated = "2026年5月8日";
+const contactUrl = getContactMailtoUrl();
 ---
 
 <BaseLayout
@@ -63,7 +65,7 @@ const lastUpdated = "2026年5月8日";
         <h2>第6条（キャンセルおよび返金）</h2>
         <ol>
           <li>ユーザーはいつでもサブスクリプションをキャンセルできます。解約はアプリの設定画面からStripeのサブスクリプション管理ページに遷移して行うことができます。キャンセル後は次の更新日以降の請求は発生しませんが、残存期間の日割り返金はいたしません。</li>
-          <li>アプリからの解約手続きが困難な場合は、<a href="/#contact">お問い合わせフォーム</a>よりご連絡ください。</li>
+          <li>アプリからの解約手続きが困難な場合は、<a href={contactUrl}>お問い合わせ</a>よりご連絡ください。</li>
           <li>デジタルコンテンツの性質上、決済完了後の返金は原則お受けしておりません。ただし、当サービスに帰因する重大な不具合が発生した場合は個別にご対応いたします。</li>
         </ol>
 
@@ -111,7 +113,7 @@ const lastUpdated = "2026年5月8日";
 
         <h2>第13条（お問い合わせ）</h2>
         <p>
-          本規約に関するお問い合わせは、<a href="/#contact">お問い合わせフォーム</a>よりご連絡ください。
+          本規約に関するお問い合わせは、<a href={contactUrl}>お問い合わせ</a>よりご連絡ください。
         </p>
       </div>
 

@@ -4,10 +4,12 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import FaqAccordion from "@/components/FaqAccordion.astro";
 import { faqPageFaqs, homeFaqs, usageFaqs } from "@/data/faq";
+import { getContactMailtoUrl } from "@/lib/contact";
 
 const pageTitle = "FAQ | GoodCoiner";
 const pageDescription =
   "グッドコイナーのよくある質問です。APIキーの安全性、対応取引所、無料プラン、利確予約、IP制限、接続トラブルなどをまとめています。";
+const contactUrl = getContactMailtoUrl();
 
 const structuredData = [
   {
@@ -26,7 +28,7 @@ const structuredData = [
 ---
 
 <BaseLayout title={pageTitle} description={pageDescription} structuredData={structuredData}>
-  <Header docs />
+  <Header docs docsTone="muted" />
   <main class="min-h-screen bg-[var(--bg-surface-muted)] px-6 pb-20 pt-10 md:px-8 md:pb-28 md:pt-14">
     <div class="mx-auto flex max-w-[1094px] flex-col gap-14 md:gap-20">
       <section class="mx-auto max-w-[760px] text-center">
@@ -74,10 +76,13 @@ const structuredData = [
           ここにない内容は、お問い合わせから確認できます。
         </p>
         <a
-          href="/#contact"
-          class="mt-4 inline-flex items-center justify-center rounded-[120px] bg-[var(--accent-yellow)] px-5 py-3 font-['Noto_Sans_JP'] text-[14px] font-bold text-[var(--text-primary)]"
+          href={contactUrl}
+          class="mt-4 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-[120px] bg-[#e1e5ea] px-10 py-2 font-['Noto_Sans_JP'] text-[16px] font-bold text-[var(--text-primary)] transition hover:bg-[#d5dbe2]"
         >
           お問い合わせ
+          <svg viewBox="0 0 20 20" aria-hidden="true" class="h-4 w-4 shrink-0">
+            <path d="M8 5L13 10L8 15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
         </a>
       </section>
     </div>

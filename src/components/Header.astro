@@ -4,9 +4,11 @@ import { getAppDownloadUrl } from "@/lib/download";
 interface Props {
   /** ドキュメント系ページ向け：上余白を詰め、ヘッダーアニメを即時表示 */
   docs?: boolean;
+  /** ドキュメント系ページ向けの背景トーン */
+  docsTone?: "default" | "muted";
 }
 
-const { docs = false } = Astro.props;
+const { docs = false, docsTone = "default" } = Astro.props;
 
 const navItems = [
   { label: "特徴", href: "/#features" },
@@ -27,7 +29,10 @@ const appDownloadUrl = getAppDownloadUrl(import.meta.env);
   >
     <nav
       class:list={[
-        "header-shell mx-auto flex h-[50px] items-center justify-between rounded-[var(--radius-pill)] bg-white/95 px-5 pr-2 shadow-[var(--shadow-float)] md:h-16 md:max-w-[1094px] md:px-8 md:pr-4",
+        "header-shell mx-auto flex h-[50px] items-center justify-between rounded-[var(--radius-pill)] px-5 pr-2 shadow-[var(--shadow-float)] md:h-16 md:max-w-[1094px] md:px-8 md:pr-4",
+        docsTone === "muted"
+          ? "bg-[rgba(245,245,245,0.94)]"
+          : "bg-white/95",
         docs && "header-shell--docs",
       ]}
     >

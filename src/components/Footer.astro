@@ -1,8 +1,10 @@
 ---
 import { getAppDownloadUrl } from "@/lib/download";
+import { getContactMailtoUrl } from "@/lib/contact";
 
 const footerMobileTitleLines = ["Be a Good", "Coiner"];
 const appDownloadUrl = getAppDownloadUrl(import.meta.env);
+const contactUrl = getContactMailtoUrl();
 ---
 
 <footer
@@ -103,7 +105,7 @@ const appDownloadUrl = getAppDownloadUrl(import.meta.env);
         <div class="flex w-full flex-col items-center gap-6 md:max-w-[568px] md:items-end md:gap-3">
           <div class="flex w-full flex-wrap items-center justify-center gap-x-3 gap-y-1 md:justify-end md:gap-x-4">
           <a
-            href="#contact"
+            href={contactUrl}
             class="font-inter-jp text-[11px] font-bold leading-[32.38px] tracking-[0.08em] text-[var(--text-inverse)] md:text-[13px] md:leading-5 md:tracking-[1.04px]"
           >
             お問い合わせ
@@ -121,6 +123,12 @@ const appDownloadUrl = getAppDownloadUrl(import.meta.env);
             利用規約
           </a>
           <span class="basis-full" aria-hidden="true"></span>
+          <a
+            href="/faq"
+            class="font-inter-jp text-[11px] font-bold leading-[32.38px] tracking-[0.08em] text-[var(--text-inverse)] md:text-[13px] md:leading-5 md:tracking-[1.04px]"
+          >
+            FAQ
+          </a>
           <a
             href="/privacy"
             class="font-inter-jp text-[11px] font-bold leading-[32.38px] tracking-[0.08em] text-[var(--text-inverse)] md:text-[13px] md:leading-5 md:tracking-[1.04px]"
