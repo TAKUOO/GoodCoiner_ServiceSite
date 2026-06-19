@@ -3,6 +3,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import FaqAccordion from "@/components/FaqAccordion.astro";
+import { usageFaqs } from "@/data/faq";
 
 const gmoLoginUrl = "https://coin.z.com/jp/member/login";
 const cmanIpCheckUrl = "https://www.cman.jp/network/support/go_access.cgi";
@@ -10,6 +11,21 @@ const cmanIpCheckUrl = "https://www.cman.jp/network/support/go_access.cgi";
 const pageTitle = "利用方法 | GoodCoiner";
 const pageDescription =
   "グッドコイナーをはじめるための手順をステップで案内します。GMOコインのAPI設定からアプリへの登録、セキュリティの注意まで。";
+
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: usageFaqs.map((faq) => ({
+      "@type": "Question",
+      name: faq.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: faq.answer,
+      },
+    })),
+  },
+];
 
 const sidebarNav = [
   { id: "usage-heading", label: "はじめに" },
@@ -55,32 +71,9 @@ const securityCards = [
   },
 ];
 
-const usageFaqs = [
-  {
-    question: "APIキーは必要ですか？",
-    answer:
-      "はい。GMOコインの資産情報や取引履歴を取得するために必要です。",
-    open: true,
-  },
-  {
-    question: "注文の権限は必要ですか？",
-    answer:
-      "資産や履歴の確認だけなら参照系の権限で足ります。利確予約など注文機能を使う場合は、注文系の権限が別途必要です。",
-  },
-  {
-    question: "接続できないときは？",
-    answer:
-      "APIキー・APIシークレットの入力ミス、API権限、IPアドレス制限、GMOコインのメンテナンス、お手元のネットワークを確認してください。",
-  },
-  {
-    question: "保存したAPIシークレットをあとから見られますか？",
-    answer:
-      "いいえ。安全のため、グッドコイナーでは保存済みのシークレットは再表示しません。変更する場合は、新しいAPIキー／APIシークレットを再入力してください。",
-  },
-];
 ---
 
-<BaseLayout title={pageTitle} description={pageDescription}>
+<BaseLayout title={pageTitle} description={pageDescription} structuredData={structuredData}>
   <Header docs />
   <main class="min-h-screen bg-white">
     <div
@@ -428,6 +421,15 @@ const usageFaqs = [
           </div>
 
           <FaqAccordion items={usageFaqs} />
+
+          <div class="mt-8 flex justify-center">
+            <a
+              href="/faq"
+              class="inline-flex items-center justify-center rounded-[120px] border border-[var(--border-soft)] bg-white px-5 py-3 font-['Noto_Sans_JP'] text-[14px] font-bold text-[var(--text-primary)] transition hover:bg-[var(--bg-elevated)]"
+            >
+              FAQページを見る
+            </a>
+          </div>
         </div>
       </div>
     </section>
