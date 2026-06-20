@@ -18,8 +18,9 @@ interface Env {
   PUBLIC_SERVICE_SITE_URL?: string;
   PUBLIC_SITE_URL: string;
   ALLOWED_ORIGIN: string;
-  // 市場イベント連携 (/api/market-events)。macro は ForexFactory の
-  // 無料フィード(キー不要)を使用。crypto 連携(次フェーズ)で Coindar キーを使う。
+  // 市場イベント連携 (/api/market-events)。macro は FRED(無料キー)の
+  // 発表予定日 + FOMC公式日程。crypto 連携(次フェーズ)で Coindar キーを使う。
+  FRED_API_KEY?: string;
   COINDAR_API_KEY?: string;
 }
 

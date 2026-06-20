@@ -21,15 +21,10 @@ export type MarketEvent = {
   url?: string;
 };
 
-const CACHE_TTL_SECONDS = 3600; // 外部API取得結果を1時間キャッシュ
-const STALE_TTL_SECONDS = 60 * 60 * 24 * 7; // 取得失敗時のフォールバック用に最大7日保持
+const CACHE_TTL_SECONDS = 3600; // 取得結果を1時間キャッシュ
+const STALE_TTL_SECONDS = 60 * 60 * 24 * 7; // 失敗時フォールバック用に最大7日保持
 const CACHE_KEY = "https://goodcoiner.com/__cache/market-events/macro";
-
-// macro イベントの無料ソース。ForexFactory の経済指標カレンダーを
-// 公式配信元 faireconomy.media が API キー不要の JSON で提供している。
-// 制限: 取得できるのは「今週分」のみ（数日先まで）。
-const MACRO_FEED_URL = "https://nfs.faireconomy.media/ff_calendar_thisweek.json";
-const MACRO_SOURCE = "ForexFactory";
+const FETCH_FUTURE_DAYS = 60; // 先読み期間（2週間要件に十分なマージン）
 
 const RESPONSE_HEADERS = {
   "Content-Type": "application/json; charset=utf-8",
@@ -42,54 +37,21 @@ const RESPONSE_HEADERS = {
 const isYmd = (value: string | null): value is string =>
   Boolean(value && /^\d{4}-\d{2}-\d{2}$/.test(value));
 
-// ---- ForexFactory (faireconomy) 連携: macro ----
+const SYMBOLS = ["BTC", "ETH"];
 
-type ForexFactoryRow = {
-  title?: string;
-  country?: string;
-  date?: string; // ISO8601 + オフセット 例: "2026-06-17T14:00:00-04:00"
-  impact?: string; // "High" | "Medium" | "Low" | "Holiday"
-};
+// ---- 時刻変換 (米東部時間 → JST) ----
 
-// BTC/ETH に影響しやすい主要イベントの許可リスト。
-// High インパクトのものは別途すべて拾うので、ここは「中インパクトでも含めたい」もの中心。
-const PRIORITY_PATTERNS: RegExp[] = [
-  /federal funds rate/i,
-  /interest rate/i,
-  /fomc/i,
-  /\bcpi\b/i,
-  /consumer price/i,
-  /non.?farm/i,
-  /unemployment rate/i,
-  /pce price/i,
-  /powell/i,
-  /retail sales/i,
-  /\bgdp\b/i,
-  /producer price/i,
-  /\bppi\b/i,
-];
-
-function mapImportance(impact: string | undefined): MarketEventImportance | null {
-  switch ((impact ?? "").toLowerCase()) {
-    case "high":
-      return "high";
-    case "medium":
-      return "medium";
-    case "low":
-      return "low";
-    default:
-      return null; // Holiday など対象外
-  }
+// 指定日が米国東部の夏時間(EDT)かどうか。DSTは3月第2日曜〜11月第1日曜。
+function isUsEasternDst(y: number, m: number, d: number): boolean {
+  if (m < 3 || m > 11) return false;
+  if (m > 3 && m < 11) return true;
+  const firstDow = new Date(Date.UTC(y, m - 1, 1)).getUTCDay();
+  const firstSunday = 1 + ((7 - firstDow) % 7);
+  if (m === 3) return d >= firstSunday + 7; // 第2日曜以降
+  return d < firstSunday; // 11月: 第1日曜より前
 }
 
-// ISO 文字列を JST(Asia/Tokyo) の date / time に変換する。
-// オフセット付き("...-04:00")はそのまま、無指定はGMT扱いで解釈する。
-function toJst(value: string | undefined): { date: string; time: string } | null {
-  if (!value) return null;
-  const hasTz = /(?:Z|[+-]\d{2}:?\d{2})$/.test(value);
-  const ms = Date.parse(hasTz ? value : `${value}Z`);
-  if (Number.isNaN(ms)) return null;
-
+function formatJst(ms: number): { date: string; time: string } {
   const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Tokyo",
     year: "numeric",
@@ -99,7 +61,6 @@ function toJst(value: string | undefined): { date: string; time: string } | null
     minute: "2-digit",
     hour12: false,
   }).formatToParts(new Date(ms));
-
   const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
   let hour = get("hour");
   if (hour === "24") hour = "00";
@@ -109,101 +70,154 @@ function toJst(value: string | undefined): { date: string; time: string } | null
   };
 }
 
-function jpTitle(title: string): string {
-  const e = title.toLowerCase();
-  if (/fomc minutes/.test(e)) return "FOMC 議事要旨";
-  if (/fomc economic projections/.test(e)) return "FOMC 経済見通し";
-  if (/fomc press conference/.test(e)) return "FOMC 記者会見";
-  if (/fomc statement/.test(e)) return "FOMC 声明";
-  if (/federal funds rate|interest rate decision/.test(e))
-    return "FOMC 政策金利発表";
-  if (/core cpi|core consumer price/.test(e))
-    return "米 コアCPI（消費者物価指数）";
-  if (/\bcpi\b|consumer price/.test(e)) return "米 CPI（消費者物価指数）";
-  if (/non.?farm/.test(e)) return "米 雇用統計（非農業部門雇用者数）";
-  if (/unemployment rate/.test(e)) return "米 失業率";
-  if (/core pce/.test(e)) return "米 コアPCE（個人消費支出物価指数）";
-  if (/pce price/.test(e)) return "米 PCE（個人消費支出物価指数）";
-  if (/powell/.test(e)) return "パウエルFRB議長 発言";
-  if (/core retail sales/.test(e)) return "米 コア小売売上高";
-  if (/retail sales/.test(e)) return "米 小売売上高";
-  if (/\bgdp\b/.test(e)) return "米 GDP（国内総生産）";
-  if (/producer price|\bppi\b/.test(e)) return "米 PPI（生産者物価指数）";
-  return title;
+// 米東部の壁時計時刻(etHour:etMin)を JST の date/time に変換する。
+function etToJst(
+  dateYmd: string,
+  etHour: number,
+  etMin: number
+): { date: string; time: string } {
+  const [y, m, d] = dateYmd.split("-").map(Number);
+  const offset = isUsEasternDst(y, m, d) ? 4 : 5; // ET = UTC - offset
+  return formatJst(Date.UTC(y, m - 1, d, etHour + offset, etMin));
 }
 
-function isPriority(title: string): boolean {
-  return PRIORITY_PATTERNS.some((re) => re.test(title));
+function ymdUtc(ms: number): string {
+  return new Date(ms).toISOString().slice(0, 10);
 }
 
-function slug(value: string): string {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+// ---- FRED 経済指標カレンダー (発表予定日) ----
+
+type FredRelease = {
+  id: number;
+  title: string;
+  importance: MarketEventImportance;
+};
+
+// 取得対象の FRED リリース。米指標の発表は原則 08:30 ET。
+const FRED_RELEASES: FredRelease[] = [
+  { id: 10, title: "米 CPI（消費者物価指数）", importance: "high" },
+  { id: 50, title: "米 雇用統計（非農業部門雇用者数）", importance: "high" },
+  { id: 54, title: "米 PCE（個人消費支出物価指数）", importance: "medium" },
+  { id: 53, title: "米 GDP（国内総生産）", importance: "medium" },
+  { id: 46, title: "米 PPI（生産者物価指数）", importance: "medium" },
+  { id: 9, title: "米 小売売上高", importance: "medium" },
+];
+const FRED_RELEASE_HOUR = 8;
+const FRED_RELEASE_MIN = 30;
+
+type FredResponse = { release_dates?: { date?: string }[] };
+
+async function fetchReleaseDates(
+  release: FredRelease,
+  apiKey: string,
+  start: string,
+  end: string
+): Promise<MarketEvent[]> {
+  const url =
+    `https://api.stlouisfed.org/fred/release/dates?release_id=${release.id}` +
+    `&api_key=${encodeURIComponent(apiKey)}&file_type=json` +
+    `&include_release_dates_with_no_data=true` +
+    `&realtime_start=${start}&realtime_end=${end}&sort_order=asc`;
+
+  const res = await fetch(url, { headers: { Accept: "application/json" } });
+  if (!res.ok) throw new Error(`FRED ${release.id} responded ${res.status}`);
+
+  const data = (await res.json()) as FredResponse;
+  const dates = data.release_dates ?? [];
+
+  return dates
+    .map((row) => row.date)
+    .filter((d): d is string => isYmd(d))
+    .map((etDate) => {
+      const jst = etToJst(etDate, FRED_RELEASE_HOUR, FRED_RELEASE_MIN);
+      return {
+        id: `fred-${release.id}-${etDate}`,
+        date: jst.date,
+        time: jst.time,
+        title: release.title,
+        source: "FRED",
+        category: "macro" as const,
+        importance: release.importance,
+        symbols: SYMBOLS,
+        url: `https://fred.stlouisfed.org/release?rid=${release.id}`,
+      };
+    });
 }
 
-function mapMacroFeed(rows: ForexFactoryRow[]): MarketEvent[] {
-  const events: MarketEvent[] = [];
-  const seen = new Set<string>();
+// ---- FOMC (公式日程をハードコード。発表は決定日 14:00 ET) ----
 
-  for (const row of rows) {
-    // 米国(USD)の指標のみ対象
-    if (row.country !== "USD") continue;
+// 2026年 FOMC 決定日（federalreserve.gov 公表の2日目）
+const FOMC_DECISION_DATES = [
+  "2026-01-28",
+  "2026-03-18",
+  "2026-04-29",
+  "2026-06-17",
+  "2026-07-29",
+  "2026-09-16",
+  "2026-10-28",
+  "2026-12-09",
+];
+const FOMC_HOUR = 14;
+const FOMC_MIN = 0;
 
-    const title = (row.title ?? "").trim();
-    if (!title) continue;
-
-    const importance = mapImportance(row.impact);
-    if (importance === null) continue; // Holiday 等は除外
-    // High はすべて、それ以外は優先リストに一致するものだけ採用
-    if (importance !== "high" && !isPriority(title)) continue;
-
-    const jst = toJst(row.date);
-    if (!jst) continue;
-
-    const id = `ff-${jst.date}-${slug(title)}`;
-    if (seen.has(id)) continue;
-    seen.add(id);
-
-    events.push({
-      id,
+function fomcEvents(): MarketEvent[] {
+  return FOMC_DECISION_DATES.map((etDate) => {
+    const jst = etToJst(etDate, FOMC_HOUR, FOMC_MIN);
+    return {
+      id: `fomc-${etDate}`,
       date: jst.date,
       time: jst.time,
-      title: jpTitle(title),
-      source: MACRO_SOURCE,
-      category: "macro",
-      importance,
-      symbols: ["BTC", "ETH"],
-    });
-  }
+      title: "FOMC 政策金利発表",
+      source: "Federal Reserve",
+      category: "macro" as const,
+      importance: "high" as const,
+      symbols: SYMBOLS,
+      url: "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+    };
+  });
+}
 
-  events.sort((a, b) =>
+// ---- 集約 ----
+
+function sortEvents(events: MarketEvent[]): MarketEvent[] {
+  return events.sort((a, b) =>
     `${a.date} ${a.time ?? ""}`.localeCompare(`${b.date} ${b.time ?? ""}`)
   );
-  return events;
 }
 
-async function fetchMacroEvents(): Promise<MarketEvent[]> {
-  const res = await fetch(MACRO_FEED_URL, {
-    headers: { Accept: "application/json" },
-  });
-  if (!res.ok) {
-    throw new Error(`Macro feed responded ${res.status}`);
+// FRED + FOMC を集約。FOMC は常に静的に入るため、FRED が落ちても最低限返る。
+async function buildEvents(env: Env): Promise<MarketEvent[]> {
+  const events: MarketEvent[] = [...fomcEvents()];
+
+  const apiKey = env.FRED_API_KEY;
+  if (apiKey) {
+    const now = Date.now();
+    const start = ymdUtc(now);
+    const end = ymdUtc(now + FETCH_FUTURE_DAYS * 86_400_000);
+
+    const results = await Promise.allSettled(
+      FRED_RELEASES.map((r) => fetchReleaseDates(r, apiKey, start, end))
+    );
+    for (const result of results) {
+      if (result.status === "fulfilled") events.push(...result.value);
+    }
   }
 
-  const data = (await res.json()) as unknown;
-  if (!Array.isArray(data)) {
-    throw new Error("Macro feed returned a non-array payload");
-  }
-  return mapMacroFeed(data as ForexFactoryRow[]);
+  return sortEvents(events);
 }
 
-// ---- Cache API (1時間キャッシュ + 失敗時の stale フォールバック) ----
+// ---- Cache API (1時間キャッシュ + 失敗時 stale フォールバック) ----
 
 function getEdgeCache(): Cache | null {
   const store = (globalThis as { caches?: { default?: Cache } }).caches;
   return store?.default ?? null;
 }
 
-async function loadEvents(): Promise<MarketEvent[]> {
+function countFred(events: MarketEvent[]): number {
+  return events.filter((e) => e.source === "FRED").length;
+}
+
+async function loadEvents(env: Env): Promise<MarketEvent[]> {
   const cache = getEdgeCache();
   const cacheRequest = new Request(CACHE_KEY);
 
@@ -216,7 +230,14 @@ async function loadEvents(): Promise<MarketEvent[]> {
   }
 
   try {
-    const fresh = await fetchMacroEvents();
+    const fresh = await buildEvents(env);
+
+    // FRED が一時的に取れなかった場合、FRED入りの stale があればそちらを優先。
+    if (countFred(fresh) === 0 && cached) {
+      const stale = (await cached.json()) as MarketEvent[];
+      if (countFred(stale) > 0) return stale;
+    }
+
     if (cache) {
       const stored = new Response(JSON.stringify(fresh), {
         headers: {
@@ -229,7 +250,6 @@ async function loadEvents(): Promise<MarketEvent[]> {
     }
     return fresh;
   } catch {
-    // 取得失敗時は stale キャッシュを返す。無ければ空配列。
     return cached ? ((await cached.json()) as MarketEvent[]) : [];
   }
 }
@@ -239,9 +259,9 @@ async function loadEvents(): Promise<MarketEvent[]> {
 export const optionsMarketEvents: APIRoute = () =>
   new Response(null, { status: 204, headers: RESPONSE_HEADERS });
 
-export const getMarketEvents: APIRoute = async ({ url }) => {
+export const getMarketEvents: APIRoute = async ({ url, locals }) => {
   try {
-    const events = await loadEvents();
+    const events = await loadEvents(locals.runtime.env);
 
     const from = url.searchParams.get("from");
     const to = url.searchParams.get("to");

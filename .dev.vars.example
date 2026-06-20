@@ -17,6 +17,8 @@ PUBLIC_SITE_URL=http://localhost:4321
 ALLOWED_ORIGIN=http://localhost:1212
 
 # 市場イベント連携 (/api/market-events)
-# macro は ForexFactory の無料フィード(faireconomy.media)を使用するためキー不要。
+# macro: FRED の無料 API キー(https://fredaccount.stlouisfed.org/apikeys)。
+#        未設定でも FOMC(公式日程ハードコード)は返るが、CPI/雇用統計等は出ない。
+FRED_API_KEY=your_fred_api_key_here
 # crypto イベント連携 (次フェーズ) で Coindar の API キーを使用予定。
 COINDAR_API_KEY=your_coindar_api_key_here
