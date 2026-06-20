@@ -18,8 +18,8 @@ interface Env {
   PUBLIC_SERVICE_SITE_URL?: string;
   PUBLIC_SITE_URL: string;
   ALLOWED_ORIGIN: string;
-  // 市場イベント連携用の外部APIキー（Cloudflare Pages の環境変数で設定）
-  TRADING_ECONOMICS_API_KEY?: string;
+  // 市場イベント連携 (/api/market-events)。macro は ForexFactory の
+  // 無料フィード(キー不要)を使用。crypto 連携(次フェーズ)で Coindar キーを使う。
   COINDAR_API_KEY?: string;
 }
 

@@ -23,9 +23,13 @@ export type MarketEvent = {
 
 const CACHE_TTL_SECONDS = 3600; // 外部API取得結果を1時間キャッシュ
 const STALE_TTL_SECONDS = 60 * 60 * 24 * 7; // 取得失敗時のフォールバック用に最大7日保持
-const FETCH_PAST_DAYS = 7; // 直近の確定イベントも少しだけ含める
-const FETCH_FUTURE_DAYS = 120; // カレンダー表示に十分な先の範囲を取得
-const TE_CACHE_KEY = "https://goodcoiner.com/__cache/market-events/trading-economics";
+const CACHE_KEY = "https://goodcoiner.com/__cache/market-events/macro";
+
+// macro イベントの無料ソース。ForexFactory の経済指標カレンダーを
+// 公式配信元 faireconomy.media が API キー不要の JSON で提供している。
+// 制限: 取得できるのは「今週分」のみ（数日先まで）。
+const MACRO_FEED_URL = "https://nfs.faireconomy.media/ff_calendar_thisweek.json";
+const MACRO_SOURCE = "ForexFactory";
 
 const RESPONSE_HEADERS = {
   "Content-Type": "application/json; charset=utf-8",
@@ -38,52 +42,52 @@ const RESPONSE_HEADERS = {
 const isYmd = (value: string | null): value is string =>
   Boolean(value && /^\d{4}-\d{2}-\d{2}$/.test(value));
 
-// ---- Trading Economics 連携 (macro) ----
+// ---- ForexFactory (faireconomy) 連携: macro ----
 
-type TradingEconomicsRow = {
-  CalendarId?: string | number;
-  Date?: string;
-  Country?: string;
-  Category?: string;
-  Event?: string;
-  Importance?: number | string;
-  URL?: string;
+type ForexFactoryRow = {
+  title?: string;
+  country?: string;
+  date?: string; // ISO8601 + オフセット 例: "2026-06-17T14:00:00-04:00"
+  impact?: string; // "High" | "Medium" | "Low" | "Holiday"
 };
 
 // BTC/ETH に影響しやすい主要イベントの許可リスト。
-// importance が high のものは下の判定で別途拾うので、ここは「中程度でも必ず含めたい」ものを中心に。
+// High インパクトのものは別途すべて拾うので、ここは「中インパクトでも含めたい」もの中心。
 const PRIORITY_PATTERNS: RegExp[] = [
-  /interest rate decision/i,
-  /fed interest rate/i,
+  /federal funds rate/i,
+  /interest rate/i,
   /fomc/i,
-  /inflation rate/i,
-  /consumer price/i,
   /\bcpi\b/i,
-  /non.?farm payrolls/i,
-  /\bnfp\b/i,
+  /consumer price/i,
+  /non.?farm/i,
   /unemployment rate/i,
   /pce price/i,
   /powell/i,
-  /fed chair/i,
-  /fed press conference/i,
-  /jackson hole/i,
+  /retail sales/i,
   /\bgdp\b/i,
   /producer price/i,
   /\bppi\b/i,
-  /retail sales/i,
 ];
 
-function mapImportance(value: number | string | undefined): MarketEventImportance {
-  const n = typeof value === "string" ? Number(value) : value;
-  if (n === 3) return "high";
-  if (n === 2) return "medium";
-  return "low";
+function mapImportance(impact: string | undefined): MarketEventImportance | null {
+  switch ((impact ?? "").toLowerCase()) {
+    case "high":
+      return "high";
+    case "medium":
+      return "medium";
+    case "low":
+      return "low";
+    default:
+      return null; // Holiday など対象外
+  }
 }
 
-// TE の Date は GMT。アプリは JST 表記を期待しているため Asia/Tokyo に変換する。
-function toJst(teDate: string | undefined): { date: string; time?: string } | null {
-  if (!teDate) return null;
-  const ms = Date.parse(teDate.endsWith("Z") ? teDate : `${teDate}Z`);
+// ISO 文字列を JST(Asia/Tokyo) の date / time に変換する。
+// オフセット付き("...-04:00")はそのまま、無指定はGMT扱いで解釈する。
+function toJst(value: string | undefined): { date: string; time: string } | null {
+  if (!value) return null;
+  const hasTz = /(?:Z|[+-]\d{2}:?\d{2})$/.test(value);
+  const ms = Date.parse(hasTz ? value : `${value}Z`);
   if (Number.isNaN(ms)) return null;
 
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -97,92 +101,77 @@ function toJst(teDate: string | undefined): { date: string; time?: string } | nu
   }).formatToParts(new Date(ms));
 
   const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
-  const date = `${get("year")}-${get("month")}-${get("day")}`;
   let hour = get("hour");
   if (hour === "24") hour = "00";
-  const time = `${hour}:${get("minute")}`;
-
-  // GMT 00:00:00 は「時刻未定」を表すことが多いため time は省略する。
-  const gmtMidnight = (teDate.endsWith("Z") ? teDate : `${teDate}Z`).includes(
-    "T00:00:00"
-  );
-  return gmtMidnight ? { date } : { date, time };
+  return {
+    date: `${get("year")}-${get("month")}-${get("day")}`,
+    time: `${hour}:${get("minute")}`,
+  };
 }
 
-function jpTitle(event: string): string {
-  const e = event.toLowerCase();
+function jpTitle(title: string): string {
+  const e = title.toLowerCase();
   if (/fomc minutes/.test(e)) return "FOMC 議事要旨";
-  if (/fomc economic projections|economic projections/.test(e))
-    return "FOMC 経済見通し";
-  if (/interest rate decision|fed interest rate/.test(e))
+  if (/fomc economic projections/.test(e)) return "FOMC 経済見通し";
+  if (/fomc press conference/.test(e)) return "FOMC 記者会見";
+  if (/fomc statement/.test(e)) return "FOMC 声明";
+  if (/federal funds rate|interest rate decision/.test(e))
     return "FOMC 政策金利発表";
-  if (/core inflation rate|core cpi/.test(e))
+  if (/core cpi|core consumer price/.test(e))
     return "米 コアCPI（消費者物価指数）";
-  if (/inflation rate|consumer price|\bcpi\b/.test(e))
-    return "米 CPI（消費者物価指数）";
-  if (/non.?farm payrolls|\bnfp\b/.test(e))
-    return "米 雇用統計（非農業部門雇用者数）";
+  if (/\bcpi\b|consumer price/.test(e)) return "米 CPI（消費者物価指数）";
+  if (/non.?farm/.test(e)) return "米 雇用統計（非農業部門雇用者数）";
   if (/unemployment rate/.test(e)) return "米 失業率";
   if (/core pce/.test(e)) return "米 コアPCE（個人消費支出物価指数）";
   if (/pce price/.test(e)) return "米 PCE（個人消費支出物価指数）";
-  if (/jackson hole/.test(e)) return "ジャクソンホール会議";
-  if (/fed press conference/.test(e)) return "FRB 記者会見";
-  if (/powell|fed chair/.test(e)) return "パウエルFRB議長 発言";
+  if (/powell/.test(e)) return "パウエルFRB議長 発言";
+  if (/core retail sales/.test(e)) return "米 コア小売売上高";
+  if (/retail sales/.test(e)) return "米 小売売上高";
   if (/\bgdp\b/.test(e)) return "米 GDP（国内総生産）";
   if (/producer price|\bppi\b/.test(e)) return "米 PPI（生産者物価指数）";
-  if (/retail sales/.test(e)) return "米 小売売上高";
-  return event;
+  return title;
 }
 
-function isPriority(event: string, category: string): boolean {
-  const text = `${event} ${category}`;
-  return PRIORITY_PATTERNS.some((re) => re.test(text));
+function isPriority(title: string): boolean {
+  return PRIORITY_PATTERNS.some((re) => re.test(title));
 }
 
-function ymd(date: Date): string {
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Tokyo",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(date);
+function slug(value: string): string {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 }
 
-function mapTradingEconomics(rows: TradingEconomicsRow[]): MarketEvent[] {
+function mapMacroFeed(rows: ForexFactoryRow[]): MarketEvent[] {
   const events: MarketEvent[] = [];
   const seen = new Set<string>();
 
   for (const row of rows) {
-    const event = (row.Event ?? "").trim();
-    const category = (row.Category ?? "").trim();
-    if (!event) continue;
+    // 米国(USD)の指標のみ対象
+    if (row.country !== "USD") continue;
 
-    const importance = mapImportance(row.Importance);
-    if (importance !== "high" && !isPriority(event, category)) continue;
+    const title = (row.title ?? "").trim();
+    if (!title) continue;
 
-    const jst = toJst(row.Date);
+    const importance = mapImportance(row.impact);
+    if (importance === null) continue; // Holiday 等は除外
+    // High はすべて、それ以外は優先リストに一致するものだけ採用
+    if (importance !== "high" && !isPriority(title)) continue;
+
+    const jst = toJst(row.date);
     if (!jst) continue;
 
-    const id = row.CalendarId
-      ? `te-${row.CalendarId}`
-      : `te-${jst.date}-${event.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+    const id = `ff-${jst.date}-${slug(title)}`;
     if (seen.has(id)) continue;
     seen.add(id);
-
-    const url = row.URL
-      ? `https://tradingeconomics.com${row.URL.startsWith("/") ? "" : "/"}${row.URL}`
-      : undefined;
 
     events.push({
       id,
       date: jst.date,
-      ...(jst.time ? { time: jst.time } : {}),
-      title: jpTitle(event),
-      source: "Trading Economics",
+      time: jst.time,
+      title: jpTitle(title),
+      source: MACRO_SOURCE,
       category: "macro",
       importance,
       symbols: ["BTC", "ETH"],
-      ...(url ? { url } : {}),
     });
   }
 
@@ -192,40 +181,31 @@ function mapTradingEconomics(rows: TradingEconomicsRow[]): MarketEvent[] {
   return events;
 }
 
-async function fetchTradingEconomics(apiKey: string): Promise<MarketEvent[]> {
-  const now = Date.now();
-  const d1 = ymd(new Date(now - FETCH_PAST_DAYS * 86400_000));
-  const d2 = ymd(new Date(now + FETCH_FUTURE_DAYS * 86400_000));
-
-  const endpoint =
-    `https://api.tradingeconomics.com/calendar/country/united%20states/${d1}/${d2}` +
-    `?c=${encodeURIComponent(apiKey)}&format=json`;
-
-  const res = await fetch(endpoint, {
+async function fetchMacroEvents(): Promise<MarketEvent[]> {
+  const res = await fetch(MACRO_FEED_URL, {
     headers: { Accept: "application/json" },
   });
   if (!res.ok) {
-    throw new Error(`Trading Economics responded ${res.status}`);
+    throw new Error(`Macro feed responded ${res.status}`);
   }
 
   const data = (await res.json()) as unknown;
   if (!Array.isArray(data)) {
-    throw new Error("Trading Economics returned a non-array payload");
+    throw new Error("Macro feed returned a non-array payload");
   }
-  return mapTradingEconomics(data as TradingEconomicsRow[]);
+  return mapMacroFeed(data as ForexFactoryRow[]);
 }
 
-// ---- Cache API (取得結果の1時間キャッシュ + 失敗時の stale フォールバック) ----
+// ---- Cache API (1時間キャッシュ + 失敗時の stale フォールバック) ----
 
 function getEdgeCache(): Cache | null {
   const store = (globalThis as { caches?: { default?: Cache } }).caches;
   return store?.default ?? null;
 }
 
-async function loadEvents(env: Env): Promise<MarketEvent[]> {
-  const apiKey = env.TRADING_ECONOMICS_API_KEY;
+async function loadEvents(): Promise<MarketEvent[]> {
   const cache = getEdgeCache();
-  const cacheRequest = new Request(TE_CACHE_KEY);
+  const cacheRequest = new Request(CACHE_KEY);
 
   const cached = cache ? await cache.match(cacheRequest) : undefined;
   if (cached) {
@@ -235,13 +215,8 @@ async function loadEvents(env: Env): Promise<MarketEvent[]> {
     }
   }
 
-  // キーが無ければ外部取得できない。stale があればそれを、無ければ空配列を返す。
-  if (!apiKey) {
-    return cached ? ((await cached.json()) as MarketEvent[]) : [];
-  }
-
   try {
-    const fresh = await fetchTradingEconomics(apiKey);
+    const fresh = await fetchMacroEvents();
     if (cache) {
       const stored = new Response(JSON.stringify(fresh), {
         headers: {
@@ -264,9 +239,9 @@ async function loadEvents(env: Env): Promise<MarketEvent[]> {
 export const optionsMarketEvents: APIRoute = () =>
   new Response(null, { status: 204, headers: RESPONSE_HEADERS });
 
-export const getMarketEvents: APIRoute = async ({ url, locals }) => {
+export const getMarketEvents: APIRoute = async ({ url }) => {
   try {
-    const events = await loadEvents(locals.runtime.env);
+    const events = await loadEvents();
 
     const from = url.searchParams.get("from");
     const to = url.searchParams.get("to");
