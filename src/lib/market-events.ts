@@ -23,7 +23,8 @@ export type MarketEvent = {
 
 const CACHE_TTL_SECONDS = 3600; // 取得結果を1時間キャッシュ
 const STALE_TTL_SECONDS = 60 * 60 * 24 * 7; // 失敗時フォールバック用に最大7日保持
-const CACHE_KEY = "https://goodcoiner.com/__cache/market-events/macro";
+// バージョンを含める: データソース/スキーマ変更時に旧キャッシュを読まないため。
+const CACHE_KEY = "https://goodcoiner.com/__cache/market-events/macro-fred-v1";
 const FETCH_FUTURE_DAYS = 60; // 先読み期間（2週間要件に十分なマージン）
 
 const RESPONSE_HEADERS = {
