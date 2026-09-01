@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import Stripe from "stripe";
+import { withEntitlementToken } from "./entitlement-token";
 
 type BillingStatus = "monthly" | "yearly" | "free" | "expired" | "early_access" | "owner";
 
@@ -57,7 +58,12 @@ export const postBillingEntitlement: APIRoute = async ({ request, locals }) => {
 
   const resolvedRow = await refreshStripeSubscription(row, env).catch(() => row);
 
-  return json(toEntitlementResponse(resolvedRow), 200, headers);
+  /*
+   * ここがリフレッシュの本体。契約が生きていれば新しい exp のトークンを再発行し、
+   * 解約・返金・期限切れなら**発行しない**。署名トークンは取り消せないので、
+   * 「再発行を拒否する」ことで最長でも exp(14日)以内に失効させる。
+   */
+  return json(await withEntitlementToken(env, toEntitlementResponse(resolvedRow)), 200, headers);
 };
 
 export const optionsBillingEntitlement: APIRoute = ({ locals }) => {

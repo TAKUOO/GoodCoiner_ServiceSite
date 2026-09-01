@@ -18,6 +18,12 @@ interface Env {
   PUBLIC_SERVICE_SITE_URL?: string;
   PUBLIC_SITE_URL: string;
   ALLOWED_ORIGIN: string;
+  /*
+   * 署名付き entitlement token の秘密鍵(EC P-256 の JWK 文字列・kid 付き)。
+   * `wrangler secret put ENTITLEMENT_PRIVATE_JWK` で登録する。コード・ログに残さない。
+   * 未設定でもレスポンスは壊れない(トークンが付かないだけ)。
+   */
+  ENTITLEMENT_PRIVATE_JWK?: string;
   // 市場イベント連携 (/api/market-events)。macro は FRED(無料キー)の
   // 発表予定日 + FOMC公式日程。crypto 連携(次フェーズ)で Coindar キーを使う。
   FRED_API_KEY?: string;
