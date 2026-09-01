@@ -1,5 +1,6 @@
 import type { APIRoute } from "astro";
 import Stripe from "stripe";
+import { withEntitlementToken } from "./entitlement-token";
 
 type BillingStatus =
   | "monthly"
@@ -121,13 +122,14 @@ export const postBillingActivate: APIRoute = async ({ request, locals }) => {
     .bind(now, activationToken.token)
     .run();
 
+  // アプリはここで受け取った署名トークンを保存し、以後の有料判定の根拠にする
   return json(
-    {
+    await withEntitlementToken(env, {
       billingStatus: resolved.billingStatus,
       currentPeriodEnd: resolved.currentPeriodEnd,
       cancelAtPeriodEnd: resolved.cancelAtPeriodEnd,
       entitlementKey: resolved.entitlementKey,
-    },
+    }),
     200,
     headers
   );
