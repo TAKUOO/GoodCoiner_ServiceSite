@@ -35,7 +35,7 @@ const RESPONSE_HEADERS = {
   "Access-Control-Allow-Headers": "Content-Type",
 };
 
-const isYmd = (value: string | null | undefined): value is string =>
+const isYmd = (value: string | null): value is string =>
   Boolean(value && /^\d{4}-\d{2}-\d{2}$/.test(value));
 
 const SYMBOLS = ["BTC", "ETH"];
