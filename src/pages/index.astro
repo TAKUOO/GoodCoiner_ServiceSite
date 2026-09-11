@@ -15,9 +15,9 @@ const siteUrl = Astro.site ?? Astro.url;
 const appDownloadUrl = new URL(getAppDownloadUrl(import.meta.env), siteUrl).toString();
 const pageUrl = new URL(Astro.url.pathname, siteUrl).toString();
 const ogImageUrl = new URL("/ogp.png", siteUrl).toString();
-const pageTitle = "GoodCoiner | iPhoneで続ける、無料のトレード日記";
+const pageTitle = "GoodCoiner | 仮想通貨の取引履歴・損益分析・利確予約をまとめて管理";
 const pageDescription =
-  "iPhoneでトレードを記録し、取引履歴・損益・ルールをあとから振り返る無料アプリ。OSS版も準備中です。";
+  "仮想通貨の取引履歴管理、損益分析、トレードルールの振り返り、自動利確予約をひとつにまとめたアプリ。感覚や感情に左右されがちなトレードを、可視化・分析・管理で支えます。";
 
 const structuredData = [
   {
@@ -29,7 +29,7 @@ const structuredData = [
     url: pageUrl,
     image: ogImageUrl,
     applicationCategory: "FinanceApplication",
-    operatingSystem: "iOS, macOS",
+    operatingSystem: "macOS",
     inLanguage: "ja-JP",
     downloadUrl: appDownloadUrl,
     offers: [
@@ -42,10 +42,17 @@ const structuredData = [
       },
       {
         "@type": "Offer",
-        name: "GoodCoiner Pro（準備中）",
-        price: "0",
-        priceCurrency: "JPY",
-        availability: "https://schema.org/PreOrder",
+        name: "月額プラン",
+        price: "6.99",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
+      },
+      {
+        "@type": "Offer",
+        name: "年額プラン",
+        price: "70",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
       },
     ],
   },

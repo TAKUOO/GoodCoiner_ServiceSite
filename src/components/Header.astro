@@ -11,9 +11,9 @@ interface Props {
 const { docs = false, docsTone = "default" } = Astro.props;
 
 const navItems = [
-  { label: "できること", href: "/#features" },
+  { label: "特徴", href: "/#features" },
   { label: "料金", href: "/#pricing" },
-  { label: "使い方", href: "/usage" },
+  { label: "利用方法", href: "/usage" },
 ];
 const mobileNavItems = navItems.filter((item) => item.label !== "特徴");
 const appDownloadUrl = getAppDownloadUrl(import.meta.env);
@@ -62,7 +62,7 @@ const appDownloadUrl = getAppDownloadUrl(import.meta.env);
           href={appDownloadUrl}
           class="ml-4 inline-flex items-center gap-1 rounded-[120px] bg-[var(--accent-yellow)] px-4 py-2 text-[14px] font-bold leading-4 text-[var(--text-primary)] transition hover:bg-[var(--accent-yellow-hover)]"
         >
-          PC版を使う
+          ダウンロード
           <img src="/assets/icons/download.svg" alt="" aria-hidden="true" class="h-5 w-5" />
         </a>
       </div>
